@@ -1,0 +1,47 @@
+{
+  "name": "sprint-14",
+  "version": "1.0.0",
+  "description": "Yandex praktikum project",
+  "main": "./app.js",
+  "scripts": {
+    "dev": "nodemon app.js",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yagushevskij/sprint-14.git"
+  },
+  "keywords": [
+    "yandex",
+    "praktikum",
+    "sprint",
+    "studying",
+    "web",
+    "developer",
+    "back-end"
+  ],
+  "author": "Igor Yagushevskiy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/yagushevskij/sprint-14/issues"
+  },
+  "homepage": "https://github.com/yagushevskij/sprint-14#readme",
+  "devDependencies": {
+    "eslint": "^7.5.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "nodemon": "^2.0.4"
+  },
+  "dependencies": {
+    "@awaitjs/express": "^0.6.1",
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
+    "escape-html": "^1.0.3",
+    "express": "^4.17.1",
+    "helmet": "^4.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.27",
+    "mongoose-unique-validator": "^2.0.3",
+    "validator": "^13.1.1"
+  }
+}
