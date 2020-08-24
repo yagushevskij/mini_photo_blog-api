@@ -1,5 +1,11 @@
 module.exports = (err, req, res, next) => {
-  if (err.name === 'NotFound') {
+  // Проверяем, есть ли свойство errors, которое создает модуль валидации
+  // и отправляем ошибку.
+  if (err.errors) {
+    res.status(400).send(err.errors);
+    return;
+  }
+  if (err.name === 'NotFoundError') {
     res.status(404).json({ message: err.message });
     return;
   }
@@ -11,11 +17,11 @@ module.exports = (err, req, res, next) => {
     res.status(400).json({ message: err.message });
     return;
   }
-  if (err.name === 'Forbidden') {
+  if (err.name === 'ForbiddenError') {
     res.status(403).json({ message: err.message });
     return;
   }
-  if (err.name === 'Unauthorized') {
+  if (err.name === 'UnauthorizedError') {
     res.status(401).json({ message: err.message });
     return;
   }

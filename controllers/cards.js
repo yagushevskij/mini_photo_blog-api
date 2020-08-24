@@ -1,6 +1,6 @@
+const { validationResult } = require('express-validator');
 const Card = require('../models/card');
-const { isUserExist } = require('../helpers.js');
-const { cardNotFoundErr, ForbiddenErr } = require('../data.js');
+const CustomError = require('../classes/CustomError');
 
 const getCards = async (req, res, next) => {
   try {
@@ -12,15 +12,11 @@ const getCards = async (req, res, next) => {
 
 const createCard = async (req, res, next) => {
   try {
-    const owner = req.user._id;
-    const userExist = await isUserExist(owner);
-    if (userExist) {
-      const { name, link } = req.body;
-      const result = await Card.create({ name, link, owner });
-      res.json(result);
-    } else {
-      next(ForbiddenErr);
-    }
+    validationResult(req).throw(); // Валидация данных.
+    // Если данные невалидны - срабатывает блок catch.
+    const { name, link } = req.body;
+    const result = await Card.create({ name, link, owner: req.user._id });
+    res.json(result);
   } catch (err) {
     next(err);
   }
@@ -28,11 +24,11 @@ const createCard = async (req, res, next) => {
 
 const deleteCard = async (req, res, next) => {
   try {
-    const result = await Card.findById(req.params.cardId).populate('owner').orFail(cardNotFoundErr);
-    if (JSON.stringify(req.user._id) === JSON.stringify(result.owner._id)) {
+    const result = await Card.findById(req.params.cardId).populate('owner').orFail(new CustomError('NotFoundError', 'Карточка не найдена'));
+    if ((result.owner) && JSON.stringify(req.user._id) === JSON.stringify(result.owner._id)) {
       result.remove(() => { res.json(result); });
     } else {
-      next(ForbiddenErr);
+      next(new CustomError('ForbiddenError', 'Действие запрещено'));
     }
   } catch (err) {
     next(err);
@@ -41,19 +37,13 @@ const deleteCard = async (req, res, next) => {
 
 const addLike = async (req, res, next) => {
   try {
-    const owner = req.user._id;
-    const userExist = await isUserExist(owner);
-    if (userExist) {
-      const result = await Card.findById(req.params.cardId).populate('owner').orFail(cardNotFoundErr);
-      if (result.likes.includes(owner)) {
-        res.json({ message: 'Можно только 1 маленький лайк' });
-      } else {
-        result.likes.push(owner);
-        result.save();
-        res.status(201).json(result);
-      }
+    const result = await Card.findById(req.params.cardId).populate('owner').orFail(new CustomError('NotFoundError', 'Карточка не найдена'));
+    if (result.likes.includes(req.user._id)) {
+      res.json({ message: 'Можно только 1 маленький лайк' });
     } else {
-      next(ForbiddenErr);
+      result.likes.push(req.user._id);
+      result.save();
+      res.status(201).json(result);
     }
   } catch (err) {
     next(err);
@@ -62,19 +52,13 @@ const addLike = async (req, res, next) => {
 
 const removeLike = async (req, res, next) => {
   try {
-    const owner = req.user._id;
-    const userExist = await isUserExist(owner);
-    if (userExist) {
-      const result = await Card.findById(req.params.cardId).populate('owner').orFail(cardNotFoundErr);
-      if (result.likes.includes(req.user._id)) {
-        result.likes.splice(result.likes.indexOf(req.user._id), 1);
-        result.save();
-        res.json(result);
-      } else {
-        res.json({ message: 'В минус лайками не уйти(' });
-      }
+    const result = await Card.findById(req.params.cardId).populate('owner').orFail(new CustomError('NotFoundError', 'Карточка не найдена'));
+    if (result.likes.includes(req.user._id)) {
+      result.likes.splice(result.likes.indexOf(req.user._id), 1);
+      result.save();
+      res.json(result);
     } else {
-      next(ForbiddenErr);
+      res.json({ message: 'В минус лайками не уйти(' });
     }
   } catch (err) {
     next(err);
