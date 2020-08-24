@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 const User = require('../models/user');
 const CustomError = require('../classes/CustomError');
+const { jwtSecretKey } = require('../data.js');
 
 const getUsers = async (req, res, next) => {
   try {
@@ -75,7 +76,7 @@ const login = async (req, res, next) => {
     const user = await User.findOne({ email }).select('+password').orFail(new CustomError('UnauthorizedError', 'Неверный логин или пароль'));
     const isPassCorrect = await bcrypt.compare(password, user.password);
     if (isPassCorrect) {
-      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, jwtSecretKey, { expiresIn: '7d' });
       res.cookie('jwt', token, { maxAge: 60 * 60 * 24 * 7 * 1000, httpOnly: true, sameSite: true }).end();
     } else {
       next(new CustomError('UnauthorizedError', 'Неверный логин или пароль'));
