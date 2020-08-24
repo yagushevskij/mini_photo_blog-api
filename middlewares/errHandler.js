@@ -1,3 +1,5 @@
+const { getErrMessages } = require('../helpers.js');
+
 module.exports = (err, req, res, next) => {
   if (err.name === 'NotFoundError') {
     res.status(404).json({ message: err.message });
@@ -22,11 +24,7 @@ module.exports = (err, req, res, next) => {
   // Проверяем, есть ли свойство errors, которое создает модуль валидации.
   // Извлекаем из массивов сообщения и отправляем.
   if (err.errors) {
-    let errorMessage = '';
-    err.errors.forEach((item) => {
-      errorMessage += `${item.msg}. `;
-    });
-    res.status(400).send({ message: errorMessage });
+    res.status(400).send({ message: getErrMessages(err.errors) });
     return;
   }
   res.status(500).json({ message: 'На сервере произошла ошибка' });
