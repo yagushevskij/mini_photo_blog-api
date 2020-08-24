@@ -5,7 +5,7 @@ const userValidationRules = {
   name: body('name').trim().isLength({ min: 2 }, { max: 30 }).escape()
     .withMessage('Имя пользователя должно быть от 2 до 30 символов'),
   about: body('about').trim().notEmpty().escape()
-    .withMessage('Обязательное поле'),
+    .withMessage('About - обязательное поле'),
   email: body('email').isEmail().withMessage('Некорректный Email'),
   avatar: body('avatar').isURL().withMessage('Некорректная ссылка'),
 };
