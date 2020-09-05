@@ -14,6 +14,7 @@ const limiter = rateLimit({
   max: 100, // можно совершить максимум 100 запросов с одного IP
 });
 const { login, createUser } = require('./controllers/users.js');
+const { urlValidator } = require('./helpers.js');
 const { cards } = require('./routes/cards.js');
 const { users } = require('./routes/users.js');
 const authentication = require('./middlewares/authentication');
@@ -56,7 +57,7 @@ app.post('/signup', celebrate({
     about: Joi.string().trim().required(),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
-    avatar: Joi.string().required().uri(),
+    avatar: Joi.string().required().custom(urlValidator),
   }),
 }), createUser);
 
