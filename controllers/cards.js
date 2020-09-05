@@ -1,6 +1,6 @@
-const { validationResult } = require('express-validator');
 const Card = require('../models/card');
-const CustomError = require('../classes/CustomError');
+const NotFoundError = require('../classes/NotFoundError');
+const ForbiddenError = require('../classes/ForbiddenError');
 
 const getCards = async (req, res, next) => {
   try {
@@ -12,8 +12,6 @@ const getCards = async (req, res, next) => {
 
 const createCard = async (req, res, next) => {
   try {
-    validationResult(req).throw(); // Валидация данных.
-    // Если данные невалидны - срабатывает блок catch.
     const { name, link } = req.body;
     const result = await Card.create({ name, link, owner: req.user._id });
     res.json(result);
@@ -24,11 +22,11 @@ const createCard = async (req, res, next) => {
 
 const deleteCard = async (req, res, next) => {
   try {
-    const result = await Card.findById(req.params.cardId).populate('owner').orFail(new CustomError('NotFoundError', 'Карточка не найдена'));
+    const result = await Card.findById(req.params.cardId).populate('owner').orFail(new NotFoundError('Карточка не найдена'));
     if ((result.owner) && JSON.stringify(req.user._id) === JSON.stringify(result.owner._id)) {
       result.remove(() => { res.json(result); });
     } else {
-      next(new CustomError('ForbiddenError', 'Действие запрещено'));
+      next(new ForbiddenError('Действие запрещено'));
     }
   } catch (err) {
     next(err);
@@ -37,7 +35,7 @@ const deleteCard = async (req, res, next) => {
 
 const addLike = async (req, res, next) => {
   try {
-    const result = await Card.findById(req.params.cardId).populate('owner').orFail(new CustomError('NotFoundError', 'Карточка не найдена'));
+    const result = await Card.findById(req.params.cardId).populate('owner').orFail(new NotFoundError('Карточка не найдена'));
     if (result.likes.includes(req.user._id)) {
       res.json({ message: 'Можно только 1 маленький лайк' });
     } else {
@@ -52,7 +50,7 @@ const addLike = async (req, res, next) => {
 
 const removeLike = async (req, res, next) => {
   try {
-    const result = await Card.findById(req.params.cardId).populate('owner').orFail(new CustomError('NotFoundError', 'Карточка не найдена'));
+    const result = await Card.findById(req.params.cardId).populate('owner').orFail(new NotFoundError('Карточка не найдена'));
     if (result.likes.includes(req.user._id)) {
       result.likes.splice(result.likes.indexOf(req.user._id), 1);
       result.save();

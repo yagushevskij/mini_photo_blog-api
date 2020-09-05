@@ -1,8 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { validationResult } = require('express-validator');
 const User = require('../models/user');
-const CustomError = require('../classes/CustomError');
+const NotFoundError = require('../classes/NotFoundError');
+const UnauthorizedError = require('../classes/UnauthorizedError');
 const { jwtSecretKey } = require('../data.js');
 
 const getUsers = async (req, res, next) => {
@@ -15,7 +15,7 @@ const getUsers = async (req, res, next) => {
 
 const getUserById = async (req, res, next) => {
   try {
-    const result = await User.findById(req.params.userId).orFail(new CustomError('NotFoundError', 'Пользователь не найден'));
+    const result = await User.findById(req.params.userId).orFail(new NotFoundError('Пользователь не найден'));
     res.json(result);
   } catch (err) {
     next(err);
@@ -24,8 +24,6 @@ const getUserById = async (req, res, next) => {
 
 const createUser = async (req, res, next) => {
   try {
-    validationResult(req).throw(); // Валидация данных.
-    // Если данные невалидны - срабатывает блок catch.
     const {
       avatar, email, name, about,
     } = req.body;
@@ -41,7 +39,6 @@ const createUser = async (req, res, next) => {
 
 const editProfile = async (req, res, next) => {
   try {
-    validationResult(req).throw();
     const { name, about } = req.body;
     const result = await User.findByIdAndUpdate(req.user, {
       $set: {
@@ -49,8 +46,7 @@ const editProfile = async (req, res, next) => {
       },
     }, {
       new: true,
-      // runValidators: true,
-    }).orFail(new CustomError('NotFoundError', 'Пользователь не найден'));
+    }).orFail(new NotFoundError('Пользователь не найден'));
     res.json(result);
   } catch (err) {
     next(err);
@@ -59,11 +55,10 @@ const editProfile = async (req, res, next) => {
 
 const updateAvatar = async (req, res, next) => {
   try {
-    validationResult(req).throw();
     const result = await User.findByIdAndUpdate(req.user, { $set: { avatar: req.body.avatar } }, {
       new: true,
       runValidators: true,
-    }).orFail(new CustomError('NotFoundError', 'Пользователь не найден'));
+    }).orFail(new NotFoundError('Пользователь не найден'));
     res.json(result);
   } catch (err) {
     next(err);
@@ -73,13 +68,13 @@ const updateAvatar = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email }).select('+password').orFail(new CustomError('UnauthorizedError', 'Неверный логин или пароль'));
+    const user = await User.findOne({ email }).select('+password').orFail(new UnauthorizedError('Неверный логин или пароль'));
     const isPassCorrect = await bcrypt.compare(password, user.password);
     if (isPassCorrect) {
       const token = jwt.sign({ _id: user._id }, jwtSecretKey, { expiresIn: '7d' });
       res.cookie('jwt', token, { maxAge: 60 * 60 * 24 * 7 * 1000, httpOnly: true, sameSite: true }).end();
     } else {
-      next(new CustomError('UnauthorizedError', 'Неверный логин или пароль'));
+      next(new UnauthorizedError('Неверный логин или пароль'));
     }
   } catch (err) {
     next(err);

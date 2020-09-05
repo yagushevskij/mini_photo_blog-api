@@ -5,6 +5,9 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 
+const { celebrate, Joi, errors } = require('celebrate');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // за 15 минут
   max: 100, // можно совершить максимум 100 запросов с одного IP
@@ -14,7 +17,6 @@ const { cards } = require('./routes/cards.js');
 const { users } = require('./routes/users.js');
 const authentication = require('./middlewares/authentication');
 const authorization = require('./middlewares/authorization');
-const { userValidationRules } = require('./middlewares/validation.js');
 const errHandler = require('./middlewares/errHandler');
 
 const { PORT = 3000 } = process.env;
@@ -31,10 +33,19 @@ app.use(limiter);
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(requestLogger);
 
 app.post('/signin', login);
-app.post('/signup', [userValidationRules.password, userValidationRules.name, userValidationRules.about, userValidationRules.avatar, userValidationRules.email,
-], createUser);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().trim().min(2)
+      .max(30),
+    about: Joi.string().trim().required(),
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(8),
+    avatar: Joi.string().required().uri(),
+  }),
+}), createUser);
 
 app.use(authentication);
 app.use(authorization);
@@ -42,6 +53,9 @@ app.use(authorization);
 app.use('/cards', cards);
 app.use('/users', users);
 
+app.use(errorLogger);
+
+app.use(errors());
 app.use(errHandler);
 
 app.use((req, res) => {
