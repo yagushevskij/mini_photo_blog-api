@@ -1,4 +1,5 @@
 const cards = require('express').Router();
+const escape = require('escape-html');
 const { celebrate, Joi } = require('celebrate');
 const {
   getCards, createCard, deleteCard, addLike, removeLike,
@@ -9,6 +10,7 @@ cards.get('/', getCards);
 cards.post('/', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().trim().min(2)
+      .custom(escape)
       .max(30),
     link: Joi.string().required().custom(urlValidator),
   }),

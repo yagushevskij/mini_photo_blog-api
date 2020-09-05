@@ -1,4 +1,5 @@
 require('dotenv').config();
+const escape = require('escape-html');
 const { addAsync } = require('@awaitjs/express');
 const express = require('express');
 const rateLimit = require('express-rate-limit');
@@ -14,7 +15,7 @@ const limiter = rateLimit({
   max: 100, // можно совершить максимум 100 запросов с одного IP
 });
 const { login, createUser } = require('./controllers/users.js');
-const { urlValidator } = require('./helpers.js');
+const { urlValidator, cookieValidator } = require('./helpers.js');
 const { cards } = require('./routes/cards.js');
 const { users } = require('./routes/users.js');
 const authentication = require('./middlewares/authentication');
@@ -52,16 +53,22 @@ app.post('/signin', celebrate({
 }), login);
 app.post('/signup', celebrate({
   body: Joi.object().keys({
-    name: Joi.string().required().trim().min(2)
-      .max(30),
-    about: Joi.string().trim().required(),
+    name: Joi.string().required().trim()
+      .min(2)
+      .max(30)
+      .custom(escape),
+    about: Joi.string().trim().required().custom(escape),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
     avatar: Joi.string().required().custom(urlValidator),
   }),
 }), createUser);
 
-app.use(authentication);
+app.use(celebrate({
+  headers: Joi.object().keys({
+    authorization: Joi.string().required().custom(cookieValidator),
+  }).unknown(true),
+}), authentication);
 app.use(authorization);
 
 app.use('/cards', cards);
