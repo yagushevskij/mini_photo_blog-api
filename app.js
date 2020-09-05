@@ -19,6 +19,7 @@ const { users } = require('./routes/users.js');
 const authentication = require('./middlewares/authentication');
 const authorization = require('./middlewares/authorization');
 const errHandler = require('./middlewares/errHandler');
+const NotFoundError = require('./classes/NotFoundError');
 
 const { PORT = 3000 } = process.env;
 const app = addAsync(express());
@@ -68,11 +69,10 @@ app.use('/users', users);
 app.use(errorLogger);
 
 app.use(errors());
-app.use(errHandler);
-
-app.use((req, res) => {
-  res.status('404').json({ message: 'Запрашиваемый ресурс не найден' });
+app.use((req, res, next) => {
+  next(new NotFoundError('Запрашиваемый ресурс не найден'));
 });
+app.use(errHandler);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
