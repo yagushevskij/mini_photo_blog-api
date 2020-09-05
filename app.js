@@ -7,7 +7,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 
-const { celebrate, Joi, errors } = require('celebrate');
+const { celebrate, Joi } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const limiter = rateLimit({
@@ -15,13 +15,14 @@ const limiter = rateLimit({
   max: 100, // можно совершить максимум 100 запросов с одного IP
 });
 const { login, createUser } = require('./controllers/users.js');
-const { urlValidator, cookieValidator } = require('./helpers.js');
+const { urlValidator, cookieValidator, celebrateErrorHandler } = require('./helpers.js');
 const { cards } = require('./routes/cards.js');
 const { users } = require('./routes/users.js');
 const authentication = require('./middlewares/authentication');
 const authorization = require('./middlewares/authorization');
 const errHandler = require('./middlewares/errHandler');
 const NotFoundError = require('./classes/NotFoundError');
+// const ValidationError = require('./classes/ValidationError');
 
 const { PORT = 3000 } = process.env;
 const app = addAsync(express());
@@ -76,7 +77,7 @@ app.use('/users', users);
 
 app.use(errorLogger);
 
-app.use(errors());
+app.use(celebrateErrorHandler);
 app.use((req, res, next) => {
   next(new NotFoundError('Запрашиваемый ресурс не найден'));
 });

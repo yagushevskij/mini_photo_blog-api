@@ -1,4 +1,5 @@
 const validator = require('validator');
+const { isCelebrate } = require('celebrate');
 const ValidationError = require('./classes/ValidationError');
 const UnauthorizedError = require('./classes/UnauthorizedError');
 
@@ -16,4 +17,11 @@ const cookieValidator = (cookie) => {
   return cookie;
 };
 
-module.exports = { urlValidator, cookieValidator };
+const celebrateErrorHandler = (err, req, res, next) => {
+  if (isCelebrate(err)) {
+    next(err.joi);
+  }
+  next(err);
+};
+
+module.exports = { urlValidator, cookieValidator, celebrateErrorHandler };
