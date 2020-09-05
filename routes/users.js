@@ -5,7 +5,11 @@ const {
 } = require('../controllers/users');
 
 users.get('/', getUsers);
-users.get('/:userId', getUserById);
+users.get('/:userId', celebrate({
+  params: Joi.object().keys({
+    userId: Joi.string().alphanum().length(24),
+  }),
+}), getUserById);
 users.patch('/me', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().trim().min(2)
