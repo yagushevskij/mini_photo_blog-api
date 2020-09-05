@@ -1,6 +1,6 @@
 {
   "name": "sprint-15",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Yandex praktikum project",
   "main": "./app.js",
   "scripts": {
@@ -30,7 +30,8 @@
     "eslint": "^7.5.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.0",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "bl": ">=2.2.1"
   },
   "dependencies": {
     "@awaitjs/express": "^0.6.1",
