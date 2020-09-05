@@ -1,3 +1,4 @@
+require('dotenv').config();
 const { addAsync } = require('@awaitjs/express');
 const express = require('express');
 const rateLimit = require('express-rate-limit');
