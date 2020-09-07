@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const uniqueValidator = require('mongoose-unique-validator');
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -32,5 +31,4 @@ userSchema.statics.createUser = async function createUser(obj) {
   return rest;
 };
 
-userSchema.plugin(uniqueValidator);
 module.exports = mongoose.model('user', userSchema);
