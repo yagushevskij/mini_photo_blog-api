@@ -22,7 +22,6 @@ const authentication = require('./middlewares/authentication');
 const authorization = require('./middlewares/authorization');
 const errHandler = require('./middlewares/errHandler');
 const NotFoundError = require('./classes/NotFoundError');
-// const ValidationError = require('./classes/ValidationError');
 
 const { PORT = 3000 } = process.env;
 const app = addAsync(express());
@@ -39,12 +38,6 @@ app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestLogger);
-
-app.get('/crash-test', () => {
-  setTimeout(() => {
-    throw new Error('Сервер сейчас упадёт');
-  }, 0);
-});
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
