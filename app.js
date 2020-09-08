@@ -1,3 +1,5 @@
+require('dotenv').config();
+const escape = require('escape-html');
 const { addAsync } = require('@awaitjs/express');
 const express = require('express');
 const rateLimit = require('express-rate-limit');
@@ -5,17 +7,21 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 
+const { celebrate, Joi } = require('celebrate');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // за 15 минут
   max: 100, // можно совершить максимум 100 запросов с одного IP
 });
 const { login, createUser } = require('./controllers/users.js');
+const { urlValidator, cookieValidator, celebrateErrorHandler } = require('./helpers.js');
 const { cards } = require('./routes/cards.js');
 const { users } = require('./routes/users.js');
 const authentication = require('./middlewares/authentication');
 const authorization = require('./middlewares/authorization');
-const { userValidationRules } = require('./middlewares/validation.js');
 const errHandler = require('./middlewares/errHandler');
+const NotFoundError = require('./classes/NotFoundError');
 
 const { PORT = 3000 } = process.env;
 const app = addAsync(express());
@@ -31,22 +37,44 @@ app.use(limiter);
 app.use(helmet());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(requestLogger);
 
-app.post('/signin', login);
-app.post('/signup', [userValidationRules.password, userValidationRules.name, userValidationRules.about, userValidationRules.avatar, userValidationRules.email,
-], createUser);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+}), login);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().trim()
+      .min(2)
+      .max(30)
+      .custom(escape),
+    about: Joi.string().trim().required().custom(escape),
+    email: Joi.string().required().email(),
+    password: Joi.string().required().min(8),
+    avatar: Joi.string().required().custom(urlValidator),
+  }),
+}), createUser);
 
-app.use(authentication);
+app.use(celebrate({
+  headers: Joi.object().keys({
+    authorization: Joi.string().required().custom(cookieValidator),
+  }).unknown(true),
+}), authentication);
 app.use(authorization);
 
 app.use('/cards', cards);
 app.use('/users', users);
 
-app.use(errHandler);
+app.use(errorLogger);
 
-app.use((req, res) => {
-  res.status('404').json({ message: 'Запрашиваемый ресурс не найден' });
+app.use(celebrateErrorHandler);
+app.use((req, res, next) => {
+  next(new NotFoundError('Запрашиваемый ресурс не найден'));
 });
+app.use(errHandler);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);

@@ -1,6 +1,6 @@
 {
-  "name": "sprint-14",
-  "version": "1.1.2",
+  "name": "sprint-15",
+  "version": "1.0.3",
   "description": "Yandex praktikum project",
   "main": "./app.js",
   "scripts": {
@@ -23,25 +23,30 @@
   "author": "Igor Yagushevskiy",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yagushevskij/sprint-14/issues"
+    "url": "https://github.com/yagushevskij/sprint-15/issues"
   },
-  "homepage": "https://github.com/yagushevskij/sprint-14#readme",
+  "homepage": "https://github.com/yagushevskij/sprint-15#readme",
   "devDependencies": {
     "eslint": "^7.5.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-import": "^2.22.0",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "bl": "^2.2.1"
   },
   "dependencies": {
     "@awaitjs/express": "^0.6.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
+    "celebrate": "^12.2.0",
+    "dotenv": "^8.2.0",
+    "escape-html": "^1.0.3",
     "express": "^4.17.1",
     "express-rate-limit": "^5.1.3",
-    "express-validator": "^6.6.1",
+    "express-winston": "^4.0.5",
     "helmet": "^4.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.27",
-    "mongoose-unique-validator": "^2.0.3"
+    "validator": "^13.1.1",
+    "winston": "^3.3.3"
   }
 }
