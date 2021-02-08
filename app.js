@@ -77,12 +77,12 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-app.use(celebrate({
-  headers: Joi.object().keys({
-    authorization: Joi.string().required(),
-  }).unknown(true),
-}), authentication);
-app.use(authorization);
+// app.use(celebrate({
+//   headers: Joi.object().keys({
+//     authorization: Joi.string().required(),
+//   }).unknown(true),
+// }), authentication);
+// app.use(authorization);
 
 app.use('/cards', cards);
 app.use('/users', users);
