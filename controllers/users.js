@@ -16,7 +16,8 @@ const getUsers = async (req, res, next) => {
 
 const getUserById = async (req, res, next) => {
   try {
-    const result = await User.findById(req.params.userId).orFail(new NotFoundError('Пользователь не найден'));
+    const id = req.params.userId || req.user._id;
+    const result = await User.findById(id).orFail(new NotFoundError('Пользователь не найден'));
     res.json(result);
   } catch (err) {
     next(err);
@@ -73,7 +74,7 @@ const login = async (req, res, next) => {
     const isPassCorrect = await bcrypt.compare(password, user.password);
     if (isPassCorrect) {
       const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '365d' });
-      res.cookie('jwt', token, { maxAge: 60 * 60 * 24 * 7 * 365 * 1000, httpOnly: true, sameSite: true }).end();
+      res.send({ token });
     } else {
       next(new UnauthorizedError('Неверный логин или пароль'));
     }
