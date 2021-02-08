@@ -16,7 +16,7 @@ const limiter = rateLimit({
   max: 100, // можно совершить максимум 100 запросов с одного IP
 });
 const { login, createUser } = require('./controllers/users.js');
-const { urlValidator, cookieValidator, celebrateErrorHandler } = require('./helpers.js');
+const { urlValidator, celebrateErrorHandler } = require('./helpers.js');
 const { cards } = require('./routes/cards.js');
 const { users } = require('./routes/users.js');
 const authentication = require('./middlewares/authentication');
@@ -24,7 +24,7 @@ const authorization = require('./middlewares/authorization');
 const errHandler = require('./middlewares/errHandler');
 const NotFoundError = require('./classes/NotFoundError');
 
-const { PORT = 3001 } = process.env;
+const { PORT = 3000 } = process.env;
 const app = addAsync(express());
 
 const corsOptions = {
@@ -79,7 +79,7 @@ app.post('/signup', celebrate({
 
 app.use(celebrate({
   headers: Joi.object().keys({
-    authorization: Joi.string().required().custom(cookieValidator),
+    authorization: Joi.string().required(),
   }).unknown(true),
 }), authentication);
 app.use(authorization);

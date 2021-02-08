@@ -10,12 +10,12 @@ const urlValidator = (link) => {
   throw new ValidationError('Ошибка валидации URL');
 };
 
-const cookieValidator = (cookie) => {
-  if (!cookie || !cookie.startsWith('Bearer ')) {
-    throw new UnauthorizedError('Необходима авторизация');
-  }
-  return cookie;
-};
+// const cookieValidator = (cookie) => {
+//   if (!cookie || !cookie.startsWith('Bearer ')) {
+//     throw new UnauthorizedError('Необходима авторизация');
+//   }
+//   return cookie;
+// };
 
 const celebrateErrorHandler = (err, req, res, next) => {
   if (isCelebrate(err)) {
@@ -24,4 +24,4 @@ const celebrateErrorHandler = (err, req, res, next) => {
   next(err);
 };
 
-module.exports = { urlValidator, cookieValidator, celebrateErrorHandler };
+module.exports = { urlValidator, celebrateErrorHandler };
