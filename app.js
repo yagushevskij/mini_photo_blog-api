@@ -16,7 +16,7 @@ const limiter = rateLimit({
   max: 100, // можно совершить максимум 100 запросов с одного IP
 });
 const { login, createUser } = require('./controllers/users.js');
-const { urlValidator, celebrateErrorHandler } = require('./helpers.js');
+const { urlValidator, jwtValidator, celebrateErrorHandler } = require('./helpers.js');
 const { cards } = require('./routes/cards.js');
 const { users } = require('./routes/users.js');
 const authentication = require('./middlewares/authentication');
@@ -77,12 +77,12 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-// app.use(celebrate({
-//   headers: Joi.object().keys({
-//     authorization: Joi.string().required(),
-//   }).unknown(true),
-// }), authentication);
-// app.use(authorization);
+app.use(celebrate({
+  headers: Joi.object().keys({
+    authorization: Joi.string().required().custom(jwtValidator),
+  }).unknown(true),
+}), authentication);
+app.use(authorization);
 
 app.use('/cards', cards);
 app.use('/users', users);
