@@ -6,6 +6,7 @@ const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
+const cors = require('cors');
 
 const { celebrate, Joi } = require('celebrate');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
@@ -26,6 +27,23 @@ const NotFoundError = require('./classes/NotFoundError');
 const { PORT = 3000 } = process.env;
 const app = addAsync(express());
 
+const corsOptions = {
+  origin: [
+    'https://mesto.turbomegapro.ru',
+    'http://localhost:8080',
+    'https://yagushevskij.github.io',
+  ],
+  methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+  preflightContinue: false,
+  optionsSuccessStatus: 204,
+  allowedHeaders: [
+    'Content-Type',
+    'origin',
+    'x-access-token',
+  ],
+  credentials: true,
+};
+
 mongoose.connect('mongodb://localhost:27017/mestodb', {
   useNewUrlParser: true,
   useCreateIndex: true,
@@ -33,6 +51,7 @@ mongoose.connect('mongodb://localhost:27017/mestodb', {
   useUnifiedTopology: true,
 });
 
+app.use('*', cors(corsOptions));
 app.use(limiter);
 app.use(helmet());
 app.use(bodyParser.json());
