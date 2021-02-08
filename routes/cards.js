@@ -20,12 +20,12 @@ cards.delete('/:cardId', celebrate({
     cardId: Joi.string().alphanum().length(24).hex(),
   }),
 }), deleteCard);
-cards.put('/:cardId/likes', celebrate({
+cards.put('/like/:cardId/', celebrate({
   params: Joi.object().keys({
     cardId: Joi.string().alphanum().length(24).hex(),
   }),
 }), addLike);
-cards.delete('/:cardId/likes', celebrate({
+cards.delete('/like/:cardId/', celebrate({
   params: Joi.object().keys({
     cardId: Joi.string().alphanum().length(24).hex(),
   }),
