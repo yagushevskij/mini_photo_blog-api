@@ -23,6 +23,11 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Обязательное поле'],
     select: false,
   },
+  nickname: {
+    type: String,
+    unique: true,
+    required: [true, 'Обязательное поле'],
+  },
 });
 
 userSchema.statics.createUser = async function createUser(obj) {
