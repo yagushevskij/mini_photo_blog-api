@@ -7,7 +7,6 @@ const {
 const { urlValidator } = require('../helpers.js');
 
 users.get('/', getUsers);
-users.get('/me', getUserById);
 users.get('/:userId', celebrate({
   params: Joi.object().keys({
     userId: Joi.string().alphanum().length(24).hex(),
