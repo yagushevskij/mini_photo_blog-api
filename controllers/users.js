@@ -23,6 +23,15 @@ const getUserById = async (req, res, next) => {
   }
 };
 
+const getUserByUsername = async (req, res, next) => {
+  try {
+    const result = await User.findOne({ username: req.params.username }).orFail(new NotFoundError('Пользователь не найден'));
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+};
+
 const createUser = async (req, res, next) => {
   try {
     const {
@@ -83,5 +92,5 @@ const login = async (req, res, next) => {
 };
 
 module.exports = {
-  getUsers, getUserById, createUser, editProfile, updateAvatar, login,
+  getUsers, getUserById, getUserByUsername, createUser, editProfile, updateAvatar, login,
 };
