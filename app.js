@@ -71,6 +71,9 @@ app.post('/signup', celebrate({
       .min(2)
       .max(30)
       .custom(escape),
+    username: Joi.string().alphanum().min(3).max(10)
+      .trim()
+      .required(),
     about: Joi.string().trim().required().custom(escape),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),

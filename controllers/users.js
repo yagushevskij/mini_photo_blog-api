@@ -27,11 +27,11 @@ const getUserById = async (req, res, next) => {
 const createUser = async (req, res, next) => {
   try {
     const {
-      avatar, email, name, about,
+      avatar, email, name, username, about,
     } = req.body;
     const password = await bcrypt.hash(req.body.password, 10);
     const result = await User.createUser({
-      name, about, avatar, email, password,
+      name, username, about, avatar, email, password,
     });
     res.json(result);
   } catch (err) {
