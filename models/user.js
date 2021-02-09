@@ -23,7 +23,7 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Обязательное поле'],
     select: false,
   },
-  nickname: {
+  username: {
     type: String,
     unique: true,
     required: [true, 'Обязательное поле'],
