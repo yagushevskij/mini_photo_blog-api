@@ -1,10 +1,7 @@
-# Проектная работа №15 яндекс практикум v1.0.3
+# API сервиса [мини фотоблогов](https://github.com/yagushevskij/mesto-frontend)) v0.0.1
 
 ## Описание проекта
-Финальная учабная работа по теме "Основы бэкенда"
+Бэкенд для приложения фотоблогов, созданный на основе учебной работы Я.Практикум
 
-## Дополнительная информация:
-- IP адрес: 159.69.145.176
-- Домены front-end: turbomegapro.ru, www.turbomegapro.ru
-- Домены api: api.turbomegapro.ru, www.api.turbomegapro.ru
-
+## Используемые технологии:
+Node.js, Express.js, MongoDB
