@@ -2,11 +2,16 @@ const cards = require('express').Router();
 const escape = require('escape-html');
 const { celebrate, Joi } = require('celebrate');
 const {
-  getCards, createCard, deleteCard, addLike, removeLike,
+  getCards, getCardsByUserId, createCard, deleteCard, addLike, removeLike,
 } = require('../controllers/cards');
 const { urlValidator } = require('../helpers.js');
 
 cards.get('/', getCards);
+cards.get('/user/:userId', celebrate({
+  params: Joi.object().keys({
+    userId: Joi.string().alphanum().length(24).hex(),
+  }),
+}), getCardsByUserId);
 cards.post('/', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().trim().min(2)

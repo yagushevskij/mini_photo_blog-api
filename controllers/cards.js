@@ -10,6 +10,14 @@ const getCards = async (req, res, next) => {
   }
 };
 
+const getCardsByUserId = async (req, res, next) => {
+  try {
+    res.json(await Card.find({ owner: req.params.userId }).populate('owner').orFail(new NotFoundError('Карточки не найдены')));
+  } catch (err) {
+    next(err);
+  }
+};
+
 const createCard = async (req, res, next) => {
   try {
     const { name, link } = req.body;
@@ -64,5 +72,5 @@ const removeLike = async (req, res, next) => {
 };
 
 module.exports = {
-  getCards, createCard, deleteCard, addLike, removeLike,
+  getCards, getCardsByUserId, createCard, deleteCard, addLike, removeLike,
 };

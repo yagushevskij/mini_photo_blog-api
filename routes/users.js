@@ -2,11 +2,12 @@ const users = require('express').Router();
 const escape = require('escape-html');
 const { celebrate, Joi } = require('celebrate');
 const {
-  getUsers, getUserById, editProfile, updateAvatar, getUserByUsername,
+  getUsers, getUserById, getUserByUsername, editProfile, updateAvatar,
 } = require('../controllers/users');
 const { urlValidator } = require('../helpers.js');
 
 users.get('/', getUsers);
+users.get('/me', getUserById);
 users.get('/id/:userId', celebrate({
   params: Joi.object().keys({
     userId: Joi.string().alphanum().length(24).hex(),

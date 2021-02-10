@@ -16,7 +16,7 @@ const getUsers = async (req, res, next) => {
 
 const getUserById = async (req, res, next) => {
   try {
-    const result = await User.findById(req.params.userId).orFail(new NotFoundError('Пользователь не найден'));
+    const result = await User.findById(req.user._id).orFail(new NotFoundError('Пользователь не найден'));
     res.json(result);
   } catch (err) {
     next(err);
@@ -25,7 +25,8 @@ const getUserById = async (req, res, next) => {
 
 const getUserByUsername = async (req, res, next) => {
   try {
-    const result = await User.findOne({ username: req.params.username }).orFail(new NotFoundError('Пользователь не найден'));
+    const result = await User.findOne({ username: req.params.username })
+      .orFail(new NotFoundError('Пользователь не найден'));
     res.json(result);
   } catch (err) {
     next(err);
