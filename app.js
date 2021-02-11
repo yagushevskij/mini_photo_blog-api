@@ -74,10 +74,10 @@ app.post('/signup', celebrate({
     username: Joi.string().alphanum().min(3).max(10)
       .trim()
       .required(),
-    about: Joi.string().trim().required().custom(escape),
+    about: Joi.string().trim().custom(escape),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
-    avatar: Joi.string().required().custom(urlValidator),
+    avatar: Joi.string().custom(urlValidator),
   }),
 }), createUser);
 
