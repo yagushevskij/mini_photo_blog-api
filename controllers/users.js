@@ -43,7 +43,7 @@ const createUser = async (req, res, next) => {
       name, username, about, avatar, email, password,
     });
     const token = jwt.sign({ _id: result._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '365d' });
-    res.send({ token });
+    res.send({ token, user: result });
   } catch (err) {
     next(err);
   }
@@ -84,7 +84,7 @@ const login = async (req, res, next) => {
     const isPassCorrect = await bcrypt.compare(password, user.password);
     if (isPassCorrect) {
       const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '365d' });
-      res.send({ token });
+      res.send({ token, user });
     } else {
       next(new UnauthorizedError('Неверный логин или пароль'));
     }
