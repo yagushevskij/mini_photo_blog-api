@@ -1,4 +1,4 @@
-# API сервиса [мини фотоблогов](https://github.com/yagushevskij/mesto-frontend)) v0.0.1
+# API сервиса [мини фотоблогов](https://github.com/yagushevskij/mesto-frontend) v0.0.1
 
 ## Описание проекта
 Бэкенд для приложения фотоблогов, созданный на основе учебной работы Я.Практикум

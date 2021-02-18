@@ -3,8 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../classes/NotFoundError');
 const UnauthorizedError = require('../classes/UnauthorizedError');
-
-const { NODE_ENV, JWT_SECRET } = process.env;
+const { errMessages, JWT_SECRET } = require('../config');
 
 const getUsers = async (req, res, next) => {
   try {
@@ -16,7 +15,8 @@ const getUsers = async (req, res, next) => {
 
 const getUserById = async (req, res, next) => {
   try {
-    const result = await User.findById(req.user._id).orFail(new NotFoundError('Пользователь не найден'));
+    const result = await User.findById(req.user._id)
+      .orFail(new NotFoundError(errMessages.userNotFound));
     res.json(result);
   } catch (err) {
     next(err);
@@ -26,7 +26,7 @@ const getUserById = async (req, res, next) => {
 const getUserByUsername = async (req, res, next) => {
   try {
     const result = await User.findOne({ username: req.params.username })
-      .orFail(new NotFoundError('Пользователь не найден'));
+      .orFail(new NotFoundError(errMessages.userNotFound));
     res.json(result);
   } catch (err) {
     next(err);
@@ -42,9 +42,12 @@ const createUser = async (req, res, next) => {
     const result = await User.createUser({
       name, username, about, avatar, email, password,
     });
-    const token = jwt.sign({ _id: result._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '365d' });
+    const token = jwt.sign({ _id: result._id }, JWT_SECRET, { expiresIn: '7d' });
     res.send({ token, user: result });
   } catch (err) {
+    if ((err.name === 'MongoError') && (err.code === 11000)) {
+      err.statusCode = 409;
+    }
     next(err);
   }
 };
@@ -58,7 +61,7 @@ const editProfile = async (req, res, next) => {
       },
     }, {
       new: true,
-    }).orFail(new NotFoundError('Пользователь не найден'));
+    }).orFail(new NotFoundError(errMessages.userNotFound));
     res.json(result);
   } catch (err) {
     next(err);
@@ -70,7 +73,7 @@ const updateAvatar = async (req, res, next) => {
     const result = await User.findByIdAndUpdate(req.user, { $set: { avatar: req.body.avatar } }, {
       new: true,
       runValidators: true,
-    }).orFail(new NotFoundError('Пользователь не найден'));
+    }).orFail(new NotFoundError(errMessages.userNotFound));
     res.json(result);
   } catch (err) {
     next(err);
@@ -80,13 +83,13 @@ const updateAvatar = async (req, res, next) => {
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const user = await User.findOne({ email }).select('+password').orFail(new UnauthorizedError('Неверный логин или пароль'));
+    const user = await User.findOne({ email }).select('+password').orFail(new UnauthorizedError(errMessages.wrongAuthData));
     const isPassCorrect = await bcrypt.compare(password, user.password);
     if (isPassCorrect) {
-      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '365d' });
+      const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
       res.send({ token, user });
     } else {
-      next(new UnauthorizedError('Неверный логин или пароль'));
+      next(new UnauthorizedError(errMessages.wrongAuthData));
     }
   } catch (err) {
     next(err);

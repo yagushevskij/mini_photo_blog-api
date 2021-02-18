@@ -1,6 +1,7 @@
 const Card = require('../models/card');
 const NotFoundError = require('../classes/NotFoundError');
 const ForbiddenError = require('../classes/ForbiddenError');
+const { errMessages } = require('../config');
 
 const getCards = async (req, res, next) => {
   try {
@@ -12,7 +13,7 @@ const getCards = async (req, res, next) => {
 
 const getCardsByUserId = async (req, res, next) => {
   try {
-    res.json(await Card.find({ owner: req.params.userId }).populate('owner').orFail(new NotFoundError('Карточки не найдены')));
+    res.json(await Card.find({ owner: req.params.userId }).populate('owner').orFail(new NotFoundError(errMessages.cardNotFound)));
   } catch (err) {
     next(err);
   }
@@ -30,11 +31,11 @@ const createCard = async (req, res, next) => {
 
 const deleteCard = async (req, res, next) => {
   try {
-    const result = await Card.findById(req.params.cardId).populate('owner').orFail(new NotFoundError('Карточка не найдена'));
+    const result = await Card.findById(req.params.cardId).populate('owner').orFail(new NotFoundError(errMessages.cardNotFound));
     if ((result.owner) && JSON.stringify(req.user._id) === JSON.stringify(result.owner._id)) {
       result.remove(() => { res.json(result); });
     } else {
-      next(new ForbiddenError('Действие запрещено'));
+      next(new ForbiddenError(errMessages.forbidden));
     }
   } catch (err) {
     next(err);
@@ -43,7 +44,7 @@ const deleteCard = async (req, res, next) => {
 
 const addLike = async (req, res, next) => {
   try {
-    const result = await Card.findById(req.params.cardId).populate('owner').orFail(new NotFoundError('Карточка не найдена'));
+    const result = await Card.findById(req.params.cardId).populate('owner').orFail(new NotFoundError(errMessages.cardNotFound));
     if (result.likes.includes(req.user._id)) {
       res.status(200).json(result);
     } else {
@@ -58,13 +59,13 @@ const addLike = async (req, res, next) => {
 
 const removeLike = async (req, res, next) => {
   try {
-    const result = await Card.findById(req.params.cardId).populate('owner').orFail(new NotFoundError('Карточка не найдена'));
+    const result = await Card.findById(req.params.cardId).populate('owner').orFail(new NotFoundError(errMessages.cardNotFound));
     if (result.likes.includes(req.user._id)) {
       result.likes.splice(result.likes.indexOf(req.user._id), 1);
       result.save();
       res.json(result);
     } else {
-      res.json({ message: 'В минус лайками не уйти(' });
+      res.json({ message: 'В минус лайками не уйти(' }); // Тут нужно вернуть объект с карточкой;
     }
   } catch (err) {
     next(err);
