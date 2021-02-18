@@ -45,7 +45,7 @@ const addLike = async (req, res, next) => {
   try {
     const result = await Card.findById(req.params.cardId).populate('owner').orFail(new NotFoundError('Карточка не найдена'));
     if (result.likes.includes(req.user._id)) {
-      res.json({ message: 'Можно только 1 маленький лайк' });
+      res.status(200).json(result);
     } else {
       result.likes.push(req.user._id);
       result.save();
