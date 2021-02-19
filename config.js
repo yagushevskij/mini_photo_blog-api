@@ -1,6 +1,7 @@
 const { JWT_SECRET = 'jwt-secret-key' } = process.env;
 const { DB_CONN = 'mongodb://localhost:27017/mestodb' } = process.env;
 const { PORT = 3001 } = process.env;
+const pathToProject = __dirname;
 const errMessages = {
   resourceNotFound: 'Запрашиваемый ресурс не найден',
   cardNotFound: 'Карточка не найдена',
@@ -19,5 +20,5 @@ const resultMessages = {
   logout: 'Выполнен logout',
 };
 module.exports = {
-  JWT_SECRET, DB_CONN, PORT, errMessages, sysMessages, resultMessages,
+  JWT_SECRET, DB_CONN, PORT, errMessages, sysMessages, resultMessages, pathToProject,
 };

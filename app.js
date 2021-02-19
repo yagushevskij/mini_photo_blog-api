@@ -2,11 +2,9 @@ require('dotenv').config();
 const { addAsync } = require('@awaitjs/express');
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 const { isCelebrate } = require('celebrate');
 const helmet = require('helmet');
 const cors = require('cors');
-const multer = require('multer');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { limiter } = require('./middlewares/limiter');
@@ -47,8 +45,6 @@ mongoose.connect(DB_CONN, {
 app.use('*', cors(corsOptions));
 app.use(limiter);
 app.use(helmet());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestLogger);
 app.use(routes);
 app.use(errorLogger);

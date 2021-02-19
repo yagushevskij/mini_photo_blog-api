@@ -1,4 +1,6 @@
 const router = require('express').Router();
+const multer = require('multer');
+const upload = multer();
 
 const {
   getCards, getCardsByUserId, createCard, deleteCard, addLike, removeLike,
@@ -7,7 +9,7 @@ const { validateUserIdParams, validateCard, validateCardId } = require('../middl
 
 router.get('/', getCards);
 router.get('/user/:userId', validateUserIdParams, getCardsByUserId);
-router.post('/', validateCard, createCard);
+router.post('/', upload.none(), validateCard, createCard);
 router.delete('/:cardId', validateCardId, deleteCard);
 router.put('/like/:cardId/', validateCardId, addLike);
 router.delete('/like/:cardId/', validateCardId, removeLike);

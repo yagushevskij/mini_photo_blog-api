@@ -17,4 +17,6 @@ const jwtValidator = (jwt) => {
   return jwt;
 };
 
-module.exports = { urlValidator, jwtValidator };
+const getRandomStr = () => Math.random().toString(36).substring(7);
+
+module.exports = { urlValidator, jwtValidator, getRandomStr };
