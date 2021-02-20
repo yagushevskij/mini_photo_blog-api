@@ -1,16 +1,18 @@
 const multer = require('multer');
-const { getRandomStr } = require('../helpers');
-const { pathToProject } = require('../config');
+// const { changeFileName } = require('../helpers');
+// const { pathToProject, pathToPictures } = require('../config');
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, pathToProject + '/files/pictures'); // директория, в которую будут сохранятся файлы
-  },
-  filename: (req, file, cb) => {
-    const { originalname } = file;
-    cb(null, originalname + getRandomStr());
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, pathToProject + pathToPictures
+//       .original); // директория, в которую будут сохранятся файлы
+//   },
+//   filename: (req, file, cb) => {
+//     const { originalname } = file;
+//     cb(null, changeFileName(originalname));
+//   },
+// });
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 module.exports = {

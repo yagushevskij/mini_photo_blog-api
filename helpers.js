@@ -17,6 +17,14 @@ const jwtValidator = (jwt) => {
   return jwt;
 };
 
-const getRandomStr = () => Math.random().toString(36).substring(7);
+const changeFileName = (originalname) => {
+  const indexOfStartExt = originalname.lastIndexOf('.');
+  const strLength = originalname.length;
+  const extension = originalname.substr(indexOfStartExt);
+  const extLength = extension.length;
+  const filename = originalname.substr(0, strLength - extLength);
+  const randomStr = Math.random().toString(36).substring(7);
+  return filename + '_' + randomStr + extension;
+};
 
-module.exports = { urlValidator, jwtValidator, getRandomStr };
+module.exports = { urlValidator, jwtValidator, changeFileName };

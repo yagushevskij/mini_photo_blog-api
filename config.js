@@ -1,7 +1,26 @@
+const { projectUrl = 'http://localhost:8080' } = process.env;
+const fileFormats = {
+  picture: {
+    original: {
+      path: '/files/pictures/original/',
+      quality: 100,
+    },
+    content: {
+      path: '/files/pictures/content/',
+      width: 1080,
+      quality: 80,
+    },
+    preview: {
+      path: '/files/pictures/preview/',
+      width: 480,
+      quality: 80,
+    },
+  },
+};
+const pathToProject = __dirname;
 const { JWT_SECRET = 'jwt-secret-key' } = process.env;
 const { DB_CONN = 'mongodb://localhost:27017/mestodb' } = process.env;
 const { PORT = 3001 } = process.env;
-const pathToProject = __dirname;
 const errMessages = {
   resourceNotFound: 'Запрашиваемый ресурс не найден',
   cardNotFound: 'Карточка не найдена',
@@ -20,5 +39,6 @@ const resultMessages = {
   logout: 'Выполнен logout',
 };
 module.exports = {
-  JWT_SECRET, DB_CONN, PORT, errMessages, sysMessages, resultMessages, pathToProject,
+  JWT_SECRET, DB_CONN, PORT, errMessages, sysMessages, resultMessages, pathToProject, projectUrl,
+  fileFormats,
 };

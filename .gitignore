@@ -14,5 +14,9 @@ node_modules
 .idea
 .vscode
 
+# Uploaded pictures
+files/pictures/**/*.jpg
+files/pictures/**/*.webp
+
 # ENV file
 .env
