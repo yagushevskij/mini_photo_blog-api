@@ -15,8 +15,9 @@ node_modules
 .vscode
 
 # Uploaded pictures
-files/pictures/**/*.jpg
-files/pictures/**/*.webp
+/files/pictures/**
+!/files/pictures/**/
+
 
 # ENV file
 .env
