@@ -1,4 +1,4 @@
-const { projectUrl = 'http://localhost:8080' } = process.env;
+const projectUrl = process.env.NODE_ENV === 'production' ? 'https://mesto.turbomegapro.ru' : 'http://localhost:8080';
 const fileFormats = {
   picture: {
     original: {
