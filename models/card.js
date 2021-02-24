@@ -8,7 +8,7 @@ const cardSchema = new mongoose.Schema({
   },
   link: {
     type: String,
-    required: [true, errMessages.fieldRequired],
+    required: [false, errMessages.fieldRequired],
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
@@ -23,6 +23,11 @@ const cardSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  files: {
+    original: String,
+    content: String,
+    preview: String,
   },
 });
 

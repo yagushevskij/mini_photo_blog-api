@@ -2,15 +2,18 @@ const { projectUrl = 'http://localhost:8080' } = process.env;
 const fileFormats = {
   picture: {
     original: {
+      formatName: 'original',
       path: '/files/pictures/original/',
       quality: 100,
     },
     content: {
+      formatName: 'content',
       path: '/files/pictures/content/',
       width: 1080,
       quality: 80,
     },
     preview: {
+      formatName: 'preview',
       path: '/files/pictures/preview/',
       width: 480,
       quality: 80,

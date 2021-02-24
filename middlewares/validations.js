@@ -38,7 +38,7 @@ const validateCard = celebrate({
     name: Joi.string().required().trim().min(2)
       .custom(escape)
       .max(30),
-    link: Joi.string().required().custom(urlValidator),
+    link: Joi.string().custom(urlValidator),
   }),
 });
 const validateCardId = celebrate({

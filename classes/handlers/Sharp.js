@@ -16,24 +16,32 @@ module.exports = class Sharp {
     this._originalFile = originalFile;
     this._name = name;
     const promises = [
-      this._createOriginal(),
-      this._createPreview(),
-      this._createContent(),
+      await this._createOriginal(),
+      await this._createPreview(),
+      await this._createContent(),
     ];
-    await Promise.all(promises)
-      .then(res => console.log('Pics created', res))
-      .catch(err => Promise.reject(err));
+    return Promise.all(promises)
+      .then(res => res)
+      .catch(err => err);
   };
 
-  _createOriginal = async () => {
-    const { path } = this.originPic;
+  _createOriginal = () => {
+    const { path, formatName } = this.originPic;
+    const filePath = path + this._name;
     return sharp(this._originalFile)
       .clone()
-      .toFile(this.pathToProject + path + this._name);
+      .toFile(this.pathToProject + filePath)
+      .then(() => {
+        const result = new Object();
+        result.format = formatName;
+        result.path = filePath;
+        return result;
+      });
   };
-  
-  _createPreview = async () => {
-    const { width, quality, path } = this.previewPic;
+
+  _createPreview = () => {
+    const { width, quality, path, formatName } = this.previewPic;
+    const filePath = path + this._name + '.webp';
     return sharp(this._originalFile)
       .clone()
       .resize({
@@ -41,11 +49,18 @@ module.exports = class Sharp {
         withoutEnlargement: true,
       })
       .webp(quality)
-      .toFile(this.pathToProject + path + this._name + '.webp');
+      .toFile(this.pathToProject + filePath)
+      .then(() => {
+        const result = new Object();
+        result.format = formatName;
+        result.path = filePath;
+        return result;
+      });
   };
-  
-  _createContent = async () => {
-    const { width, quality, path } = this.contentPic;
+
+  _createContent = () => {
+    const { width, quality, path, formatName } = this.contentPic;
+    const filePath = path + this._name + '.webp';
     return sharp(this._originalFile)
       .clone()
       .resize({
@@ -53,6 +68,12 @@ module.exports = class Sharp {
         withoutEnlargement: true,
       })
       .webp(quality)
-      .toFile(this.pathToProject + path + this._name + '.webp');
+      .toFile(this.pathToProject + filePath)
+      .then(() => {
+        const result = new Object();
+        result.format = formatName;
+        result.path = filePath;
+        return result;
+      });
   };
 };
