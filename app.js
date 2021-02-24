@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const { isCelebrate } = require('celebrate');
 const helmet = require('helmet');
 const cors = require('cors');
+const path = require('path');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { limiter } = require('./middlewares/limiter');
@@ -46,6 +47,7 @@ app.use('*', cors(corsOptions));
 app.use(limiter);
 app.use(helmet());
 app.use(requestLogger);
+app.use(express.static(path.join(__dirname, 'files')));
 app.use(routes);
 app.use(errorLogger);
 
