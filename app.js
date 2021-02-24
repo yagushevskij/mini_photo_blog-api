@@ -47,7 +47,7 @@ app.use('*', cors(corsOptions));
 app.use(limiter);
 app.use(helmet());
 app.use(requestLogger);
-app.use(express.static(path.join(__dirname, 'files')));
+app.use('/files', express.static(path.join(__dirname, '/files')));
 app.use(routes);
 app.use(errorLogger);
 
