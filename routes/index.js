@@ -1,6 +1,4 @@
 const router = require('express').Router();
-const multer = require('multer');
-const upload = multer();
 
 const userRouter = require('./users');
 const cardRouter = require('./cards');
@@ -12,8 +10,8 @@ const {
   validateSignInBody, validateSignUpBody, validateJWT,
 } = require('../middlewares/validations');
 
-router.post('/signin', upload.none(), validateSignInBody, login);
-router.post('/signup', upload.none(), validateSignUpBody, createUser);
+router.post('/signin', validateSignInBody, login);
+router.post('/signup', validateSignUpBody, createUser);
 router.use(validateJWT, authentication);
 router.use(authorization);
 router.use('/users', userRouter);
