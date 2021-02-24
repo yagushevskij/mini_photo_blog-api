@@ -1,4 +1,5 @@
 const projectUrl = process.env.NODE_ENV === 'production' ? 'https://mesto.turbomegapro.ru' : 'http://localhost:8080';
+const apiUrl = process.env.NODE_ENV === 'production' ? 'https://mesto-api.turbomegapro.ru' : 'http://localhost:8080';
 const fileFormats = {
   picture: {
     original: {
@@ -43,5 +44,5 @@ const resultMessages = {
 };
 module.exports = {
   JWT_SECRET, DB_CONN, PORT, errMessages, sysMessages, resultMessages, pathToProject, projectUrl,
-  fileFormats,
+  apiUrl, fileFormats,
 };

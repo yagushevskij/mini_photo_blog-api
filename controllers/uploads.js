@@ -5,7 +5,7 @@ const Card = require('../models/card');
 const Sharp = require('../classes/handlers/Sharp');
 const { changeFileName } = require('../helpers');
 // const ForbiddenError = require('../classes/ForbiddenError');
-const { fileFormats, pathToProject, projectUrl } = require('../config');
+const { fileFormats, pathToProject, apiUrl } = require('../config');
 
 const sharp = new Sharp(fileFormats.picture, pathToProject);
 const createSharpedPic = (...args) => sharp.create(...args);
@@ -16,7 +16,7 @@ const uploadPicture = async (req, res, next) => {
     await createSharpedPic(req.file.buffer, fileName)
       .then((formatsArr) => {
         const formatsObj = formatsArr.reduce((combo, item) => {
-          combo[item.format] = projectUrl + item.path;
+          combo[item.format] = apiUrl + item.path;
           return combo;
         }, {});
         Card.create({
