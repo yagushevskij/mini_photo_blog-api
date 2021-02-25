@@ -1,4 +1,5 @@
 const sharp = require('sharp');
+const path = require('path');
 const fs = require('fs');
 const got = require('got');
 const { Readable } = require('stream');
@@ -47,12 +48,13 @@ module.exports = class Sharp {
   _setOriginalConf = () => {
     const result = new Object();
     const { path, formatName } = this.originPic;
+    const pathToFile = path.join(this.pathToProject, this._originalPicPath)
     this._originalPicPath = path + this._name;
     result[formatName] = this._originalPicPath
     this._promises.push(
       this._sharpStream
         .clone()
-        .toFile(this.pathToProject + this._originalPicPath)
+        .toFile(pathToFile)
         .then(() => result)
     );
   };
@@ -60,6 +62,7 @@ module.exports = class Sharp {
   _setContentConf = () => {
     const result = new Object();
     const { width, quality, path, formatName } = this.contentPic;
+    const pathToFile = path.join(this.pathToProject, this._contentPicPath)
     this._contentPicPath = path + this._name + '.webp';
     result[formatName] = this._contentPicPath
     this._promises.push(
@@ -67,7 +70,7 @@ module.exports = class Sharp {
         .clone()
         .resize(width)
         .webp(quality)
-        .toFile(this.pathToProject + this._contentPicPath)
+        .toFile(pathToFile)
         .then(() => result)
     );
   };
@@ -75,6 +78,7 @@ module.exports = class Sharp {
   _setPreviewConf = () => {
     const result = new Object();
     const { width, quality, path, formatName } = this.previewPic;
+    const pathToFile = path.join(this.pathToProject, this._previewPicPath)
     this._previewPicPath = path + this._name + '.webp';
     result[formatName] = this._previewPicPath
     this._promises.push(
@@ -82,7 +86,7 @@ module.exports = class Sharp {
         .clone()
         .resize(width)
         .webp(quality)
-        .toFile(this.pathToProject + this._previewPicPath)
+        .toFile(pathToFile)
         .then(() => result)
     );
   };
