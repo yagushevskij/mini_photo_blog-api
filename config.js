@@ -4,18 +4,18 @@ const fileFormats = {
   picture: {
     original: {
       formatName: 'original',
-      path: '/files/pictures/original/',
+      formatPath: '/files/pictures/original/',
       quality: 100,
     },
     content: {
       formatName: 'content',
-      path: '/files/pictures/content/',
+      formatPath: '/files/pictures/content/',
       width: 1080,
       quality: 80,
     },
     preview: {
       formatName: 'preview',
-      path: '/files/pictures/preview/',
+      formatPath: '/files/pictures/preview/',
       width: 480,
       quality: 80,
     },
