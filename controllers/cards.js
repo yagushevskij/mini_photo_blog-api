@@ -3,11 +3,11 @@ const path = require('path');
 const Card = require('../models/card');
 const Sharp = require('../classes/handlers/Sharp');
 const { changeFileName } = require('../helpers');
-const { fileFormats, pathToProject, errMessages } = require('../config');
+const { fileFormats, pathToProject, errMessages, apiUrl } = require('../config');
 const NotFoundError = require('../classes/NotFoundError');
 const ForbiddenError = require('../classes/ForbiddenError');
 
-const sharpPicFromUrl = (...args) => new Sharp(fileFormats.picture, pathToProject)
+const sharpPicFromUrl = (...args) => new Sharp(fileFormats.picture, pathToProject, apiUrl)
   .createFromLink(...args);
 
 const getCards = async (req, res, next) => {
@@ -47,7 +47,7 @@ const deleteCard = async (req, res, next) => {
       result.remove(() => {
         Object.values(result.files).forEach((el) => {
           if (el !== true) {
-            const filePath = path.join(pathToProject, el);
+            const filePath = path.join(pathToProject, el.filePath);
             fs.unlinkSync(filePath);
           }
         });

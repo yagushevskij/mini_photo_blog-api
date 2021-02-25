@@ -5,9 +5,9 @@ const Card = require('../models/card');
 const Sharp = require('../classes/handlers/Sharp');
 const { changeFileName } = require('../helpers');
 // const ForbiddenError = require('../classes/ForbiddenError');
-const { fileFormats, pathToProject } = require('../config');
+const { fileFormats, pathToProject, apiUrl } = require('../config');
 
-const sharpPicFromBuffer = (...args) => new Sharp(fileFormats.picture, pathToProject)
+const sharpPicFromBuffer = (...args) => new Sharp(fileFormats.picture, pathToProject, apiUrl)
   .createFromBuffer(...args);
 
 const uploadPicture = async (req, res, next) => {

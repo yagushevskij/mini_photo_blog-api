@@ -24,9 +24,30 @@ const cardSchema = new mongoose.Schema({
     default: Date.now,
   },
   files: {
-    original: String,
-    content: String,
-    preview: String,
+    original: {
+      link: String,
+      dimension: {
+        width: String,
+        height: String,
+      },
+      filePath: String,
+    },
+    content: {
+      link: String,
+      dimension: {
+        width: String,
+        height: String,
+      },
+      filePath: String,
+    },
+    preview: {
+      link: String,
+      dimension: {
+        width: String,
+        height: String,
+      },
+      filePath: String,
+    },
   },
 });
 

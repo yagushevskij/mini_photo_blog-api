@@ -4,9 +4,10 @@ const fs = require('fs');
 const got = require('got');
 const { Readable } = require('stream');
 module.exports = class Sharp {
-  constructor(picsConf, pathToProject) {
+  constructor(picsConf, pathToProject, apiUrl) {
     this.pathToProject = pathToProject;
     const { original, content, preview } = picsConf;
+    this._apiUrl = apiUrl;
     this.originPic = original;
     this.contentPic = content;
     this.previewPic = preview;
@@ -50,12 +51,23 @@ module.exports = class Sharp {
     const { formatPath, formatName } = this.originPic;
     this._originalPicPath = formatPath + this._name;
     const pathToFile = path.join(this.pathToProject, this._originalPicPath)
-    result[formatName] = this._originalPicPath
     this._promises.push(
       this._sharpStream
         .clone()
         .toFile(pathToFile)
-        .then(() => result)
+        .then((res) => {
+          const result = {
+            [formatName]: {
+              link: this._apiUrl + this._originalPicPath,
+              filePath: this._originalPicPath,
+              dimension: {
+                width: res.width,
+                height: res.height,
+              }
+            }
+          };
+          return result
+        })
     );
   };
 
@@ -64,14 +76,25 @@ module.exports = class Sharp {
     const { width, quality, formatPath, formatName } = this.contentPic;
     this._contentPicPath = formatPath + this._name + '.webp';
     const pathToFile = path.join(this.pathToProject, this._contentPicPath)
-    result[formatName] = this._contentPicPath
     this._promises.push(
       this._sharpStream
         .clone()
         .resize(width)
         .webp(quality)
         .toFile(pathToFile)
-        .then(() => result)
+        .then((res) => {
+          const result = {
+            [formatName]: {
+              link: this._apiUrl + this._contentPicPath,
+              filePath: this._contentPicPath,
+              dimension: {
+                width: res.width,
+                height: res.height,
+              }
+            }
+          };
+          return result
+        })
     );
   };
 
@@ -80,26 +103,39 @@ module.exports = class Sharp {
     const { width, quality, formatPath, formatName } = this.previewPic;
     this._previewPicPath = formatPath + this._name + '.webp';
     const pathToFile = path.join(this.pathToProject, this._previewPicPath)
-    result[formatName] = this._previewPicPath
     this._promises.push(
       this._sharpStream
         .clone()
         .resize(width)
         .webp(quality)
         .toFile(pathToFile)
-        .then(() => result)
+        .then((res) => {
+          const result = {
+            [formatName]: {
+              link: this._apiUrl + this._previewPicPath,
+              filePath: this._previewPicPath,
+              dimension: {
+                width: res.width,
+                height: res.height,
+              }
+            }
+          };
+          return result
+        })
     );
   };
 
   _returnPromise = () => {
     return Promise.all(this._promises)
       .then((res) => {
-        return res.reduce((combo, el) => {
-          for (const i in el) {
-            combo[i] = el[i];
+        let combo = {};
+        res.forEach((el) => {
+          for (let key of Object.keys(el)) {
+            combo[key] = el[key];
           }
-          return combo;
         });
+        console.log(combo)
+        return combo;
       })
       .catch(err => {
         try {
