@@ -1,10 +1,11 @@
+const fs = require('fs');
+const path = require('path');
 const Card = require('../models/card');
 const Sharp = require('../classes/handlers/Sharp');
 const { changeFileName } = require('../helpers');
-const { fileFormats, pathToProject } = require('../config');
+const { fileFormats, pathToProject, errMessages } = require('../config');
 const NotFoundError = require('../classes/NotFoundError');
 const ForbiddenError = require('../classes/ForbiddenError');
-const { errMessages } = require('../config');
 
 const sharpPicFromUrl = (...args) => new Sharp(fileFormats.picture, pathToProject)
   .createFromLink(...args);
@@ -43,7 +44,15 @@ const deleteCard = async (req, res, next) => {
   try {
     const result = await Card.findById(req.params.cardId).populate('owner').orFail(new NotFoundError(errMessages.cardNotFound));
     if ((result.owner) && JSON.stringify(req.user._id) === JSON.stringify(result.owner._id)) {
-      result.remove(() => { res.json(result); });
+      result.remove(() => {
+        Object.values(result.files).forEach((el) => {
+          if (el !== true) {
+            const filePath = path.join(pathToProject, el);
+            fs.unlinkSync(filePath);
+          }
+        });
+        res.json(result);
+      });
     } else {
       next(new ForbiddenError(errMessages.forbidden));
     }

@@ -1,6 +1,6 @@
 const sharp = require('sharp');
-const fs = require("fs");
-const got = require("got");
+const fs = require('fs');
+const got = require('got');
 const { Readable } = require('stream');
 module.exports = class Sharp {
   constructor(picsConf, pathToProject) {
