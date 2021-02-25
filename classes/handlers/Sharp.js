@@ -1,9 +1,7 @@
 const sharp = require('sharp');
-// const fs = require("fs");
-// const got = require("got");
-// const sharpStream = sharp({
-//   failOnError: false,
-// });
+const fs = require("fs");
+const got = require("got");
+const { Readable } = require('stream');
 module.exports = class Sharp {
   constructor(picsConf, pathToProject) {
     this.pathToProject = pathToProject;
@@ -11,69 +9,98 @@ module.exports = class Sharp {
     this.originPic = original;
     this.contentPic = content;
     this.previewPic = preview;
+
+    this._promises = [];
+    this._sharpStream = sharp({ failOnError: false, });
   }
-  create = async (originalFile, name) => {
-    this._originalFile = originalFile;
+
+  _init = () => {
+    this._setOriginalConf();
+    this._setContentConf();
+    this._setPreviewConf();
+  }
+
+  createFromLink = (url, name) => {
     this._name = name;
-    const promises = [
-      await this._createOriginal(),
-      await this._createPreview(),
-      await this._createContent(),
-    ];
-    return Promise.all(promises)
-      .then(res => res)
-      .catch(err => err);
+    this._init();
+    got.stream(url).pipe(this._sharpStream);
+    return this._waitForResult();
   };
 
-  _createOriginal = () => {
+  createFromBuffer = (binary, name) => {
+    this._name = name;
+    this._init();
+    this._bufferToStream(binary).pipe(this._sharpStream);
+    return this._waitForResult();
+  }
+
+  _bufferToStream = (binary) => {
+    const readableInstanceStream = new Readable({
+      read() {
+        this.push(binary);
+        this.push(null);
+      }
+    });
+    return readableInstanceStream;
+  }
+
+  _setOriginalConf = () => {
+    const result = new Object();
     const { path, formatName } = this.originPic;
-    const filePath = path + this._name;
-    return sharp(this._originalFile)
-      .clone()
-      .toFile(this.pathToProject + filePath)
-      .then(() => {
-        const result = new Object();
-        result.format = formatName;
-        result.path = filePath;
-        return result;
-      });
+    this._originalPicPath = path + this._name;
+    result[formatName] = this._originalPicPath
+    this._promises.push(
+      this._sharpStream
+        .clone()
+        .toFile(this.pathToProject + this._originalPicPath)
+        .then(() => result)
+    );
   };
 
-  _createPreview = () => {
-    const { width, quality, path, formatName } = this.previewPic;
-    const filePath = path + this._name + '.webp';
-    return sharp(this._originalFile)
-      .clone()
-      .resize({
-        width,
-        withoutEnlargement: true,
-      })
-      .webp(quality)
-      .toFile(this.pathToProject + filePath)
-      .then(() => {
-        const result = new Object();
-        result.format = formatName;
-        result.path = filePath;
-        return result;
-      });
-  };
-
-  _createContent = () => {
+  _setContentConf = () => {
+    const result = new Object();
     const { width, quality, path, formatName } = this.contentPic;
-    const filePath = path + this._name + '.webp';
-    return sharp(this._originalFile)
-      .clone()
-      .resize({
-        width,
-        withoutEnlargement: true,
-      })
-      .webp(quality)
-      .toFile(this.pathToProject + filePath)
-      .then(() => {
-        const result = new Object();
-        result.format = formatName;
-        result.path = filePath;
-        return result;
+    this._contentPicPath = path + this._name + '.webp';
+    result[formatName] = this._contentPicPath
+    this._promises.push(
+      this._sharpStream
+        .clone()
+        .resize(width)
+        .webp(quality)
+        .toFile(this.pathToProject + this._contentPicPath)
+        .then(() => result)
+    );
+  };
+
+  _setPreviewConf = () => {
+    const result = new Object();
+    const { width, quality, path, formatName } = this.previewPic;
+    this._previewPicPath = path + this._name + '.webp';
+    result[formatName] = this._previewPicPath
+    this._promises.push(
+      this._sharpStream
+        .clone()
+        .resize(width)
+        .webp(quality)
+        .toFile(this.pathToProject + this._previewPicPath)
+        .then(() => result)
+    );
+  };
+
+  _waitForResult = () => {
+    return Promise.all(this._promises)
+      .then(res => {
+        console.log("Done!");
+        return res;
+       })
+      .catch(err => {
+        console.error("Error processing files, let's clean it up", err);
+        try {
+          fs.unlinkSync(this._originalPicPath);
+          fs.unlinkSync(this._contentPicPath);
+          fs.unlinkSync(this._previewPicPath);
+        } catch (e) { }
+        return err;
       });
   };
 };
