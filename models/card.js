@@ -6,9 +6,8 @@ const cardSchema = new mongoose.Schema({
     type: String,
     required: [true, errMessages.fieldRequired],
   },
-  link: {
+  source: {
     type: String,
-    required: [false, errMessages.fieldRequired],
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,

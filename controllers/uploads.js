@@ -14,15 +14,9 @@ const uploadPicture = async (req, res, next) => {
   try {
     const { originalname, buffer } = req.file;
     const fileName = changeFileName(originalname);
-    const resultArr = await sharpPicFromBuffer(buffer, fileName);
-    const formatsObj = resultArr.reduce((combo, el) => {
-      for (const i in el) {
-        combo[i] = el[i];
-      }
-      return combo;
-    });
+    const picsObj = await sharpPicFromBuffer(buffer, fileName);
     await Card.create({
-      name: req.body.name, owner: req.user._id, files: formatsObj,
+      name: req.body.name, owner: req.user._id, files: picsObj,
     })
       .then((result) => res.json(result));
   } catch (err) {

@@ -89,7 +89,14 @@ module.exports = class Sharp {
 
   _returnPromise = () => {
     return Promise.all(this._promises)
-      .then(res => res)
+      .then((res) => {
+        return res.reduce((combo, el) => {
+          for (const i in el) {
+            combo[i] = el[i];
+          }
+          return combo;
+        });
+      })
       .catch(err => {
         try {
           fs.unlinkSync(this._originalPicPath);

@@ -17,7 +17,7 @@ const jwtValidator = (jwt) => {
   return jwt;
 };
 
-const changeFileName = (originalname) => {
+const changeFileName = (originalname = 'pic.jpg') => {
   const indexOfStartExt = originalname.lastIndexOf('.');
   const strLength = originalname.length;
   const extension = originalname.substr(indexOfStartExt);

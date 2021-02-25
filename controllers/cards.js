@@ -1,7 +1,13 @@
 const Card = require('../models/card');
+const Sharp = require('../classes/handlers/Sharp');
+const { changeFileName } = require('../helpers');
+const { fileFormats, pathToProject } = require('../config');
 const NotFoundError = require('../classes/NotFoundError');
 const ForbiddenError = require('../classes/ForbiddenError');
 const { errMessages } = require('../config');
+
+const sharpPicFromUrl = (...args) => new Sharp(fileFormats.picture, pathToProject)
+  .createFromLink(...args);
 
 const getCards = async (req, res, next) => {
   try {
@@ -22,7 +28,11 @@ const getCardsByUserId = async (req, res, next) => {
 const createCard = async (req, res, next) => {
   try {
     const { name, link } = req.body;
-    const result = await Card.create({ name, link, owner: req.user._id });
+    const fileName = changeFileName();
+    const picsObj = await sharpPicFromUrl(link, fileName);
+    const result = await Card.create({
+      name, owner: req.user._id, files: picsObj, source: link,
+    });
     res.json(result);
   } catch (err) {
     next(err);
