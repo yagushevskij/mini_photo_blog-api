@@ -12,20 +12,19 @@ const sharpPicFromBuffer = (...args) => new Sharp(fileFormats.picture, pathToPro
 
 const uploadPicture = async (req, res, next) => {
   try {
-    const fileName = changeFileName(res.req.file.originalname);
-    await sharpPicFromBuffer(req.file.buffer, fileName)
-      .then((resultArr) => {
-        const formatsObj = resultArr.reduce((combo, el) => {
-          for (const i in el) {
-            combo[i] = el[i];
-          }
-          return combo;
-        });
-        Card.create({
-          name: res.req.body.name, owner: res.req.user._id, files: formatsObj,
-        })
-          .then((result) => res.json(result));
-      });
+    const { originalname, buffer } = req.file;
+    const fileName = changeFileName(originalname);
+    const resultArr = await sharpPicFromBuffer(buffer, fileName);
+    const formatsObj = resultArr.reduce((combo, el) => {
+      for (const i in el) {
+        combo[i] = el[i];
+      }
+      return combo;
+    });
+    await Card.create({
+      name: req.body.name, owner: req.user._id, files: formatsObj,
+    })
+      .then((result) => res.json(result));
   } catch (err) {
     next(err);
   }

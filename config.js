@@ -43,6 +43,14 @@ const resultMessages = {
   logout: 'Выполнен logout',
 };
 module.exports = {
-  JWT_SECRET, DB_CONN, PORT, errMessages, sysMessages, resultMessages, pathToProject, projectUrl,
-  apiUrl, fileFormats,
+  JWT_SECRET,
+  DB_CONN,
+  PORT,
+  errMessages,
+  sysMessages,
+  resultMessages,
+  pathToProject,
+  projectUrl,
+  apiUrl,
+  fileFormats,
 };

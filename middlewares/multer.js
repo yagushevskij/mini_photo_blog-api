@@ -1,20 +1,17 @@
 const multer = require('multer');
-// const { changeFileName } = require('../helpers');
-// const { pathToProject, pathToPictures } = require('../config');
 
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, pathToProject + pathToPictures
-//       .original); // директория, в которую будут сохранятся файлы
-//   },
-//   filename: (req, file, cb) => {
-//     const { originalname } = file;
-//     cb(null, changeFileName(originalname));
-//   },
-// });
+const imageFilter = (req, file, cb) => {
+  const fileType = file.mimetype.split('/')[0];
+  if (fileType !== 'image') {
+    cb(null, false);
+    return cb(new Error('Something went wrong'), false);
+  }
+  cb(null, true);
+};
 const storage = multer.memoryStorage();
+const multerImageUpload = multer({ storage, fileFilter: imageFilter }).single('picture');
 const upload = multer({ storage });
 
 module.exports = {
-  upload,
+  upload, multerImageUpload,
 };

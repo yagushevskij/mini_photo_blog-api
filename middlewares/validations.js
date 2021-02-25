@@ -33,6 +33,13 @@ const validateUserIdParams = celebrate({
     userId: Joi.string().alphanum().length(24).hex(),
   }),
 });
+const validateCardUpload = celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().required().trim().min(2)
+      .custom(escape)
+      .max(30),
+  }),
+});
 const validateCard = celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().trim().min(2)
@@ -75,4 +82,5 @@ module.exports = {
   validateUsername,
   validateUser,
   validateAvatar,
+  validateCardUpload,
 };

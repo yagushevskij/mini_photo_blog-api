@@ -1,13 +1,11 @@
 const router = require('express').Router();
-const { upload } = require('../middlewares/multer');
+const { multerImageUpload } = require('../middlewares/multer');
 
 const { uploadPicture } = require('../controllers/uploads');
 // const {
 //   validateUserIdParams, validateUsername, validateUser, validateAvatar,
 // } = require('../middlewares/validations');
 
-router.post('/',
-  upload.single('picture'), // Указываем multer в каком поле брать файл;
-  uploadPicture);
+router.post('/card', multerImageUpload, uploadPicture);
 
 module.exports = router;

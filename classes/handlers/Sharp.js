@@ -24,14 +24,14 @@ module.exports = class Sharp {
     this._name = name;
     this._init();
     got.stream(url).pipe(this._sharpStream);
-    return this._waitForResult();
+    return this._returnPromise();
   };
 
   createFromBuffer = (binary, name) => {
     this._name = name;
     this._init();
     this._bufferToStream(binary).pipe(this._sharpStream);
-    return this._waitForResult();
+    return this._returnPromise();
   }
 
   _bufferToStream = (binary) => {
@@ -87,20 +87,16 @@ module.exports = class Sharp {
     );
   };
 
-  _waitForResult = () => {
+  _returnPromise = () => {
     return Promise.all(this._promises)
-      .then(res => {
-        console.log("Done!");
-        return res;
-       })
+      .then(res => res)
       .catch(err => {
-        console.error("Error processing files, let's clean it up", err);
         try {
           fs.unlinkSync(this._originalPicPath);
           fs.unlinkSync(this._contentPicPath);
           fs.unlinkSync(this._previewPicPath);
         } catch (e) { }
-        return err;
+        throw new Error(err);
       });
   };
 };
