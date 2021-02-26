@@ -3,7 +3,9 @@ const path = require('path');
 const Card = require('../models/card');
 const Sharp = require('../classes/handlers/Sharp');
 const { changeFileName } = require('../helpers');
-const { fileFormats, pathToProject, errMessages, apiUrl } = require('../config');
+const {
+  fileFormats, pathToProject, errMessages, apiUrl
+} = require('../config');
 const NotFoundError = require('../classes/NotFoundError');
 const ForbiddenError = require('../classes/ForbiddenError');
 
@@ -45,10 +47,15 @@ const deleteCard = async (req, res, next) => {
     const result = await Card.findById(req.params.cardId).populate('owner').orFail(new NotFoundError(errMessages.cardNotFound));
     if ((result.owner) && JSON.stringify(req.user._id) === JSON.stringify(result.owner._id)) {
       result.remove(() => {
-        Object.values(result.files).forEach((el) => {
+        Object.values(result.files).forEach(async (el) => {
           if (el !== true) {
             const filePath = path.join(pathToProject, el.filePath);
-            fs.unlinkSync(filePath);
+            try {
+              await fs.promises.access(filePath);
+              await fs.promises.unlink(filePath);
+            } catch (err) {
+              next(err);
+            }
           }
         });
         res.json(result);

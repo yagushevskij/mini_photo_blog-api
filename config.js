@@ -1,5 +1,5 @@
 const projectUrl = process.env.NODE_ENV === 'production' ? 'https://mesto.turbomegapro.ru' : 'http://localhost:8080';
-const apiUrl = process.env.NODE_ENV === 'production' ? 'https://mesto-api.turbomegapro.ru' : 'http://localhost:8080';
+const apiUrl = process.env.NODE_ENV === 'production' ? 'https://mesto-api.turbomegapro.ru' : 'http://localhost:5500';
 const fileFormats = {
   picture: {
     original: {
