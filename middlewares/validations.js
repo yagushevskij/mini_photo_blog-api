@@ -21,6 +21,7 @@ const validateSignUpBody = celebrate({
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
     avatar: Joi.string().custom(urlValidator),
+    pageUrl: Joi.string().custom(urlValidator),
   }),
 });
 const validateJWT = celebrate({
