@@ -47,7 +47,6 @@ module.exports = class Sharp {
   }
 
   _setOriginalConf = () => {
-    const result = new Object();
     const { formatPath, formatName } = this.originPic;
     this._originalPicPath = formatPath + this._name;
     const pathToFile = path.join(this.pathToProject, this._originalPicPath)
@@ -72,7 +71,6 @@ module.exports = class Sharp {
   };
 
   _setContentConf = () => {
-    const result = new Object();
     const { width, quality, formatPath, formatName } = this.contentPic;
     this._contentPicPath = formatPath + this._name + '.webp';
     const pathToFile = path.join(this.pathToProject, this._contentPicPath)
@@ -99,7 +97,6 @@ module.exports = class Sharp {
   };
 
   _setPreviewConf = () => {
-    const result = new Object();
     const { width, quality, formatPath, formatName } = this.previewPic;
     this._previewPicPath = formatPath + this._name + '.webp';
     const pathToFile = path.join(this.pathToProject, this._previewPicPath)
@@ -134,7 +131,6 @@ module.exports = class Sharp {
             combo[key] = el[key];
           }
         });
-        console.log(combo)
         return combo;
       })
       .catch(err => {

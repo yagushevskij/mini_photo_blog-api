@@ -4,7 +4,7 @@ const Card = require('../models/card');
 const Sharp = require('../classes/handlers/Sharp');
 const { changeFileName } = require('../helpers');
 const {
-  fileFormats, pathToProject, errMessages, apiUrl
+  fileFormats, pathToProject, errMessages, apiUrl,
 } = require('../config');
 const NotFoundError = require('../classes/NotFoundError');
 const ForbiddenError = require('../classes/ForbiddenError');

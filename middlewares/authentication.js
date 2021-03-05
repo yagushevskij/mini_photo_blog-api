@@ -10,7 +10,6 @@ module.exports = (req, res, next) => {
     req.user = payload;
     next();
   } catch (err) {
-    console.log(err);
     next(new UnauthorizedError(errMessages.authorizationRequired));
   }
 };
