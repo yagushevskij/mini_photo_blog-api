@@ -29,11 +29,6 @@ const userSchema = new mongoose.Schema({
     unique: true,
     required: [true, errMessages.fieldRequired],
   },
-  pageUrl: {
-    type: String,
-    unique: true,
-    required: [true, errMessages.fieldRequired],
-  },
 });
 
 userSchema.statics.createUser = async function createUser(obj) {

@@ -36,11 +36,11 @@ const getUserByUsername = async (req, res, next) => {
 const createUser = async (req, res, next) => {
   try {
     const {
-      avatar, email, name, username, about, pageUrl
+      avatar, email, name, username, about,
     } = req.body;
     const password = await bcrypt.hash(req.body.password, 10);
     const result = await User.createUser({
-      name, username, about, avatar, email, password, pageUrl,
+      name, username, about, avatar, email, password,
     });
     const token = jwt.sign({ _id: result._id }, JWT_SECRET, { expiresIn: '7d' });
     res.send({ token, user: result });
