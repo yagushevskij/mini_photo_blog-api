@@ -42,6 +42,7 @@ const sysMessages = {
 const resultMessages = {
   logout: 'Выполнен logout',
 };
+const cookieParams = { maxAge: 60 * 60 * 24 * 7 * 1000, httpOnly: true, sameSite: true };
 module.exports = {
   JWT_SECRET,
   DB_CONN,
@@ -53,4 +54,5 @@ module.exports = {
   projectUrl,
   apiUrl,
   fileFormats,
+  cookieParams,
 };

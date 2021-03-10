@@ -1,6 +1,5 @@
 const validator = require('validator');
 const ValidationError = require('./classes/ValidationError');
-const UnauthorizedError = require('./classes/UnauthorizedError');
 const { errMessages } = require('./config');
 
 const urlValidator = (link) => {
@@ -8,13 +7,6 @@ const urlValidator = (link) => {
     return link;
   }
   throw new ValidationError(errMessages.urlInvalid);
-};
-
-const jwtValidator = (jwt) => {
-  if (!jwt || !jwt.startsWith('Bearer ')) {
-    throw new UnauthorizedError(errMessages.authorizationRequired);
-  }
-  return jwt;
 };
 
 const changeFileName = (originalname = 'pic.jpg') => {
@@ -27,4 +19,4 @@ const changeFileName = (originalname = 'pic.jpg') => {
   return filename + '_' + randomStr + extension;
 };
 
-module.exports = { urlValidator, jwtValidator, changeFileName };
+module.exports = { urlValidator, changeFileName };

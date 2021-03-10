@@ -1,6 +1,7 @@
 const { celebrate, Joi } = require('celebrate');
 const escape = require('escape-html');
-const { urlValidator, jwtValidator } = require('../helpers');
+const { urlValidator } = require('../helpers');
+const { errMessages } = require('../config');
 
 const validateSignInBody = celebrate({
   body: Joi.object().keys({
@@ -23,9 +24,11 @@ const validateSignUpBody = celebrate({
     avatar: Joi.string().custom(urlValidator),
   }),
 });
-const validateJWT = celebrate({
+const validateCookies = celebrate({
   headers: Joi.object().keys({
-    authorization: Joi.string().required().custom(jwtValidator),
+    cookie: Joi.string(),
+  }).messages({
+    'string.required': errMessages.authorizationRequired,
   }).unknown(true),
 });
 const validateUserIdParams = celebrate({
@@ -75,7 +78,7 @@ const validateAvatar = celebrate({
 module.exports = {
   validateSignInBody,
   validateSignUpBody,
-  validateJWT,
+  validateCookies,
   validateUserIdParams,
   validateCard,
   validateCardId,

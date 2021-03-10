@@ -10,12 +10,12 @@ const authentication = require('../middlewares/authentication');
 const authorization = require('../middlewares/authorization');
 const { login, createUser } = require('../controllers/users');
 const {
-  validateSignInBody, validateSignUpBody, validateJWT,
+  validateSignInBody, validateSignUpBody, validateCookies,
 } = require('../middlewares/validations');
 
 router.post('/signin', upload.none(), validateSignInBody, login);
 router.post('/signup', upload.none(), validateSignUpBody, createUser);
-router.use(validateJWT, authentication);
+router.use(validateCookies, authentication);
 router.use(authorization);
 router.use('/users', userRouter);
 router.use('/cards', cardRouter);

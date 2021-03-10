@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../classes/NotFoundError');
 const UnauthorizedError = require('../classes/UnauthorizedError');
-const { errMessages, JWT_SECRET } = require('../config');
+const { errMessages, JWT_SECRET, cookieParams } = require('../config');
 
 const getUsers = async (req, res, next) => {
   try {
@@ -43,7 +43,7 @@ const createUser = async (req, res, next) => {
       name, username, about, avatar, email, password,
     });
     const token = jwt.sign({ _id: result._id }, JWT_SECRET, { expiresIn: '7d' });
-    res.send({ token, user: result });
+    res.cookie('jwt', token, cookieParams).send(result);
   } catch (err) {
     if ((err.name === 'MongoError') && (err.code === 11000)) {
       err.statusCode = 409;
@@ -87,7 +87,7 @@ const login = async (req, res, next) => {
     const isPassCorrect = await bcrypt.compare(password, user.password);
     if (isPassCorrect) {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
-      res.send({ token, user });
+      res.cookie('jwt', token, cookieParams).send(user);
     } else {
       next(new UnauthorizedError(errMessages.wrongAuthData));
     }

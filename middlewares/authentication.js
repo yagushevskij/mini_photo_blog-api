@@ -4,8 +4,7 @@ const { errMessages, JWT_SECRET } = require('../config');
 
 module.exports = (req, res, next) => {
   try {
-    const { authorization } = req.headers;
-    const token = authorization.replace('Bearer ', '');
+    const token = req.headers.cookie.replace('jwt=', '');
     const payload = jwt.verify(token, JWT_SECRET);
     req.user = payload;
     next();
