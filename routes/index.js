@@ -8,13 +8,14 @@ const cardRouter = require('./cards');
 const uploadRouter = require('./uploads');
 const authentication = require('../middlewares/authentication');
 const authorization = require('../middlewares/authorization');
-const { login, createUser } = require('../controllers/users');
+const { login, createUser, signout } = require('../controllers/users');
 const {
   validateSignInBody, validateSignUpBody, validateCookies,
 } = require('../middlewares/validations');
 
 router.post('/signin', upload.none(), validateSignInBody, login);
 router.post('/signup', upload.none(), validateSignUpBody, createUser);
+router.get('/signout', signout);
 router.use(validateCookies, authentication);
 router.use(authorization);
 router.use('/users', userRouter);

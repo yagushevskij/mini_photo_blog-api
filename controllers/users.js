@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../classes/NotFoundError');
 const UnauthorizedError = require('../classes/UnauthorizedError');
-const { errMessages, JWT_SECRET, cookieParams } = require('../config');
+const { errMessages, resultMessages, JWT_SECRET, cookieParams } = require('../config');
 
 const getUsers = async (req, res, next) => {
   try {
@@ -96,6 +96,14 @@ const login = async (req, res, next) => {
   }
 };
 
+const signout = async (req, res, next) => {
+  try {
+    res.cookie('jwt', '', cookieParams).send({ message: resultMessages.logout });
+  } catch (err) {
+    next(err);
+  }
+};
+
 module.exports = {
-  getUsers, getUserById, getUserByUsername, createUser, editProfile, updateAvatar, login,
+  getUsers, getUserById, getUserByUsername, createUser, editProfile, updateAvatar, login, signout,
 };
