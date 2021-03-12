@@ -22,7 +22,7 @@ const getCards = async (req, res, next) => {
 
 const getCardsByUserId = async (req, res, next) => {
   try {
-    res.json(await Card.find({ owner: req.params.userId }).populate('owner').orFail(new NotFoundError(errMessages.cardNotFound)));
+    res.json(await Card.find({ owner: req.params.userId }).populate('owner'));
   } catch (err) {
     next(err);
   }
