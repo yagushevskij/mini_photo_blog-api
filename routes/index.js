@@ -6,18 +6,14 @@ const upload = multer();
 const userRouter = require('./users');
 const cardRouter = require('./cards');
 const uploadRouter = require('./uploads');
-const authentication = require('../middlewares/authentication');
-const authorization = require('../middlewares/authorization');
 const { login, createUser, signout } = require('../controllers/users');
 const {
-  validateSignInBody, validateSignUpBody, validateCookies,
+  validateSignInBody, validateSignUpBody,
 } = require('../middlewares/validations');
 
 router.post('/signin', upload.none(), validateSignInBody, login);
 router.post('/signup', upload.none(), validateSignUpBody, createUser);
 router.get('/signout', signout);
-router.use(validateCookies, authentication);
-router.use(authorization);
 router.use('/users', userRouter);
 router.use('/cards', cardRouter);
 router.use('/upload', uploadRouter);

@@ -1,10 +1,14 @@
 const router = require('express').Router();
 const { multerImageUpload } = require('../middlewares/multer');
 
+const authentication = require('../middlewares/authentication');
+const authorization = require('../middlewares/authorization');
+const { validateCookies } = require('../middlewares/validations');
+
+// Роуты, защищенные авторизацией;
+router.use(validateCookies, authentication);
+router.use(authorization);
 const { uploadPicture } = require('../controllers/uploads');
-// const {
-//   validateUserIdParams, validateUsername, validateUser, validateAvatar,
-// } = require('../middlewares/validations');
 
 router.post('/card', multerImageUpload, uploadPicture);
 
