@@ -3,7 +3,9 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../classes/NotFoundError');
 const UnauthorizedError = require('../classes/UnauthorizedError');
-const { errMessages, resultMessages, JWT_SECRET, cookieParams } = require('../config');
+const {
+  errMessages, resultMessages, JWT_SECRET, cookieParams,
+} = require('../config');
 
 const getUsers = async (req, res, next) => {
   try {
@@ -15,8 +17,7 @@ const getUsers = async (req, res, next) => {
 
 const getUserById = async (req, res, next) => {
   try {
-    const result = await User.findById(req.user._id)
-      .orFail(new NotFoundError(errMessages.userNotFound));
+    const result = await User.findById(req.user._id);
     res.json(result);
   } catch (err) {
     next(err);
@@ -25,8 +26,7 @@ const getUserById = async (req, res, next) => {
 
 const getUserByUsername = async (req, res, next) => {
   try {
-    const result = await User.findOne({ username: req.params.username })
-      .orFail(new NotFoundError(errMessages.userNotFound));
+    const result = await User.findOne({ username: req.params.username });
     res.json(result);
   } catch (err) {
     next(err);
