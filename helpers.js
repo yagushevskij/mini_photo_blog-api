@@ -1,27 +1,22 @@
 const validator = require('validator');
-const { isCelebrate } = require('celebrate');
 const ValidationError = require('./classes/ValidationError');
-const UnauthorizedError = require('./classes/UnauthorizedError');
+const { errMessages } = require('./config');
 
 const urlValidator = (link) => {
   if (validator.isURL(link)) {
     return link;
   }
-  throw new ValidationError('Ошибка валидации URL');
+  throw new ValidationError(errMessages.urlInvalid);
 };
 
-const jwtValidator = (jwt) => {
-  if (!jwt || !jwt.startsWith('Bearer ')) {
-    throw new UnauthorizedError('Необходима авторизация');
-  }
-  return jwt;
+const changeFileName = (originalname = 'pic.jpg') => {
+  const indexOfStartExt = originalname.lastIndexOf('.');
+  const strLength = originalname.length;
+  const extension = originalname.substr(indexOfStartExt);
+  const extLength = extension.length;
+  const filename = originalname.substr(0, strLength - extLength);
+  const randomStr = Math.random().toString(36).substring(7);
+  return filename + '_' + randomStr + extension;
 };
 
-const celebrateErrorHandler = (err, req, res, next) => {
-  if (isCelebrate(err)) {
-    next(err.joi);
-  }
-  next(err);
-};
-
-module.exports = { urlValidator, jwtValidator, celebrateErrorHandler };
+module.exports = { urlValidator, changeFileName };

@@ -1,18 +1,18 @@
 const mongoose = require('mongoose');
+const { errMessages } = require('../config');
 
 const cardSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'Обязательное поле'],
+    required: [true, errMessages.fieldRequired],
   },
-  link: {
+  source: {
     type: String,
-    required: [true, 'Обязательное поле'],
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
-    required: [true, 'Обязательное поле'],
+    required: [true, errMessages.fieldRequired],
   },
   likes: {
     type: [mongoose.Schema.Types.ObjectId],
@@ -22,6 +22,32 @@ const cardSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  files: {
+    original: {
+      link: String,
+      dimension: {
+        width: String,
+        height: String,
+      },
+      filePath: String,
+    },
+    content: {
+      link: String,
+      dimension: {
+        width: String,
+        height: String,
+      },
+      filePath: String,
+    },
+    preview: {
+      link: String,
+      dimension: {
+        width: String,
+        height: String,
+      },
+      filePath: String,
+    },
   },
 });
 

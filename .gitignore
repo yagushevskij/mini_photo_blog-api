@@ -14,5 +14,10 @@ node_modules
 .idea
 .vscode
 
+# Uploaded pictures
+/files/pictures/**
+!/files/pictures/**/
+
+
 # ENV file
 .env

@@ -1,30 +1,26 @@
-const users = require('express').Router();
-const escape = require('escape-html');
-const { celebrate, Joi } = require('celebrate');
+const router = require('express').Router();
+const multer = require('multer');
+
+const upload = multer();
+
+const authentication = require('../middlewares/authentication');
+const authorization = require('../middlewares/authorization');
 const {
-  getUsers, getUserById, editProfile, updateAvatar,
+  getUsers, getUserById, getUserByUsername, editProfile, updateAvatar,
 } = require('../controllers/users');
-const { urlValidator } = require('../helpers.js');
+const {
+  validateUserIdParams, validateUsername, validateUser, validateAvatar, validateCookies,
+} = require('../middlewares/validations');
 
-users.get('/', getUsers);
-users.get('/me', getUserById);
-users.get('/:userId', celebrate({
-  params: Joi.object().keys({
-    userId: Joi.string().alphanum().length(24).hex(),
-  }),
-}), getUserById);
-users.patch('/me', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().required().trim().min(2)
-      .custom(escape)
-      .max(30),
-    about: Joi.string().trim().custom(escape).required(),
-  }),
-}), editProfile);
-users.patch('/me/avatar', celebrate({
-  body: Joi.object().keys({
-    avatar: Joi.string().required().custom(urlValidator),
-  }),
-}), updateAvatar);
+router.get('/', getUsers);
+router.get('/id/:userId', validateUserIdParams, getUserById);
+router.get('/username/:username', validateUsername, getUserByUsername);
 
-module.exports = { users };
+// Роуты, защищенные авторизацией;
+router.use(validateCookies, authentication);
+router.use(authorization);
+router.get('/me', getUserById);
+router.patch('/me', upload.none(), validateUser, editProfile);
+router.patch('/me/avatar', upload.none(), validateAvatar, updateAvatar);
+
+module.exports = router;

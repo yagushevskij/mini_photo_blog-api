@@ -1,7 +1,7 @@
 {
-  "name": "sprint-15",
-  "version": "1.0.3",
-  "description": "Yandex praktikum project",
+  "name": "mini_photo_blog-api",
+  "version": "1.0.0",
+  "description": "Self study project",
   "main": "./app.js",
   "scripts": {
     "dev": "nodemon app.js",
@@ -9,23 +9,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yagushevskij/sprint-14.git"
+    "url": "git+https://github.com/yagushevskij/mini_photo_blog-api.git"
   },
   "keywords": [
-    "yandex",
-    "praktikum",
-    "sprint",
-    "studying",
-    "web",
-    "developer",
-    "back-end"
+    "blogservise",
+    "photo"
   ],
   "author": "Igor Yagushevskiy",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/yagushevskij/sprint-15/issues"
+    "url": "https://github.com/yagushevskij/mini_photo_blog-api/issues"
   },
-  "homepage": "https://github.com/yagushevskij/sprint-15#readme",
+  "homepage": "https://github.com/yagushevskij/mini_photo_blog-api#readme",
   "devDependencies": {
     "eslint": "^7.5.0",
     "eslint-config-airbnb-base": "^14.2.0",
@@ -36,7 +31,6 @@
   "dependencies": {
     "@awaitjs/express": "^0.6.1",
     "bcryptjs": "^2.4.3",
-    "body-parser": "^1.19.0",
     "celebrate": "^12.2.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
@@ -44,9 +38,13 @@
     "express": "^4.17.1",
     "express-rate-limit": "^5.1.3",
     "express-winston": "^4.0.5",
+    "file-type": "^16.2.0",
     "helmet": "^4.0.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.27",
+    "multer": "^1.4.2",
+    "sharp": "^0.27.1",
+    "stream-buffers": "^3.0.2",
     "validator": "^13.1.1",
     "winston": "^3.3.3"
   }

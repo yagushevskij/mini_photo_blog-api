@@ -1,34 +1,26 @@
-const cards = require('express').Router();
-const escape = require('escape-html');
-const { celebrate, Joi } = require('celebrate');
+const router = require('express').Router();
+const multer = require('multer');
+
+const upload = multer();
+
+const authentication = require('../middlewares/authentication');
+const authorization = require('../middlewares/authorization');
 const {
-  getCards, createCard, deleteCard, addLike, removeLike,
+  getCards, getCardsByUserId, createCard, deleteCard, addLike, removeLike,
 } = require('../controllers/cards');
-const { urlValidator } = require('../helpers.js');
+const {
+  validateUserIdParams, validateCard, validateCardId, validateCookies,
+} = require('../middlewares/validations');
 
-cards.get('/', getCards);
-cards.post('/', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().required().trim().min(2)
-      .custom(escape)
-      .max(30),
-    link: Joi.string().required().custom(urlValidator),
-  }),
-}), createCard);
-cards.delete('/:cardId', celebrate({
-  params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24).hex(),
-  }),
-}), deleteCard);
-cards.put('/like/:cardId/', celebrate({
-  params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24).hex(),
-  }),
-}), addLike);
-cards.delete('/like/:cardId/', celebrate({
-  params: Joi.object().keys({
-    cardId: Joi.string().alphanum().length(24).hex(),
-  }),
-}), removeLike);
+router.get('/', getCards);
+router.get('/user/:userId', validateUserIdParams, getCardsByUserId);
 
-module.exports = { cards };
+// Роуты, защищенные авторизацией;
+router.use(validateCookies, authentication);
+router.use(authorization);
+router.post('/', upload.none(), validateCard, createCard);
+router.delete('/:cardId', validateCardId, deleteCard);
+router.put('/like/:cardId/', validateCardId, addLike);
+router.delete('/like/:cardId/', validateCardId, removeLike);
+
+module.exports = router;
