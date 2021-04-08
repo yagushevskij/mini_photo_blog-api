@@ -1,6 +1,6 @@
 {
   "name": "mini_photo_blog-api",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Self study project",
   "main": "./app.js",
   "scripts": {
