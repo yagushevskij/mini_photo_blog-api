@@ -25,6 +25,7 @@ Node.js, NPM, MongoDB.
 > npm run dev
 - для запуска в режиме production:
 >npm run start
+>
 Приложение запустится и будет доступно по URL http://localhost:3000/
 
 ## Используемые технологии:
